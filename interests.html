@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Interests</title>
+		<link rel='shortcut icon' type='image/x-icon' href='6.png' />
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+		<link href='https://fonts.googleapis.com/css?family=Raleway:400,300,700' rel='stylesheet' type='text/css'>
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+		<!-- Add fancyBox -->
+		<link rel="stylesheet" href="fancybox/source/jquery.fancybox.css?v=2.1.5" type="text/css" media="screen" />
+		<script type="text/javascript" src="fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+		<script type="text/javascript">
+			$(document).ready(function() {
+				$(".fancybox").fancybox();
+			});
+		</script>
+		<link rel="stylesheet" type="text/css" href="style.css">
+		<script src="script.js"></script>
+		<script>
+      	function load() {
+        	init();
+        	loadButtons();
+     	 }
+      	window.onload = load;	
+
+      	function loadButtons() {
+      		console.log("pls")
+
+      		$('#loading').hide();
+      		var $buttons = $('#buttons')
+			$buttons.fadeIn(700);
+			$buttons.css("display", "block");
+			//currentlyDisplayed = document.getElementById(thumbnail.attr('interests'));
+			//currentlyDisplayed.style.display = 'block'
+			//$currentlyDisplayed = $(document.getElementById(thumbnail.attr('id')));
+		}
+    </script>
+	</head>
+	<body>
+		<div class="colored-font" id="interests">
+			<div id="nav" class="container nav-bar">
+	   			  <ul>
+	        	    <li><a class="nav-text" href="index.html">Home</a></li>
+	        	    <li><a class="nav-text" href="projects.html">Projects</a></li>
+	        	    <li><a class="nav-text" href="skills.html">Skills</a></li>
+	        	    <li class="nav-current-page">Interests</li>
+	        	    <li><a class="nav-text" href="contact.html">Contact</a><li>
+	    		  </ul>
+	  		</div>
+			<div class="text-center fade-in">
+				<p class="title">Interests</p>
+				<!--<h3>Hover over each button for more!</h1?>-->
+			</div>
+			<div id="picture-box">
+				<a class="fancybox" href="pictures/triforce.jpg">
+					<img class="center-block hidden-image" id="triforce" src="pictures/triforce.jpg">
+				</a>
+				<a class="fancybox" href="pictures/coloring.jpg">
+					<img class="center-block hidden-image" id="coloring" src="pictures/coloring.jpg">				
+				</a>
+				<a class="fancybox" href="pictures/longboarding.jpg">
+					<img class="center-block hidden-image" id="longboarding" src="pictures/longboarding.jpg">				
+				</a>
+				<a href="projects.html">
+					<img class="center-block hidden-image" id="webdev" src="pictures/soundshow/soundshow.png">				
+				</a>
+				<h4 class="hidden-image text-center" id="poetry">Coming Soon</h3>
+				<iframe class="center-block likes-videos" id="feels-like-home" src="https://www.youtube.com/embed/TaH6Qg8Pykw" frameborder="0" allowfullscreen></iframe>
+				<iframe class="center-block likes-videos" id="lose-it" src="https://www.youtube.com/embed/VgwcPiCjQ-0" frameborder="0" allowfullscreen></iframe>	
+				<iframe class="center-block likes-videos" id="twice" scrolling="no" frameborder="no" src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/224648272%3Fsecret_token%3Ds-2KHFx&amp;auto_play=false&amp;hide_related=false&amp;show_comments=true&amp;show_user=true&amp;show_reposts=false&amp;visual=true"></iframe>
+			</div>
+			<!--
+				<i id="spinner" class="fa fa-spinner fa-pulse fa-3x center"></i>
+			-->
+			<h1 id="loading" class="text-center colored-font fade-in">Loading...</h1>
+			<div id="buttons" class="container fade-in hidden-buttons">
+				<div class="row"> 
+					<div class="col-md-3 text-center padded">
+						<a href="#" class="btn btn-default likes-link" id="likes-web-dev">Web development</a> 
+					</div>
+					<div class="col-md-3 text-center padded">
+						<a href="#" class="btn btn-default likes-link" id="likes-electronic-music">Electronic music</a>
+					</div>
+					<div class="col-md-3 text-center padded">
+						<a href="#" class="btn btn-default likes-link" id="likes-dancing">Dancing</a>
+					</div>
+					<div class="col-md-3 text-center padded" id="likes-coloring">
+						<a href="#" class="btn btn-default likes-link">Coloring</a>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-3 text-center padded" id="likes-longboarding">
+						<a href="#" class="btn btn-default likes-link">Longboarding</a>
+					</div>
+					<div class="col-md-3 text-center padded">
+						<a href="#" class="btn btn-default likes-link" id="likes-producing-music">Producing music</a> 
+					</div>
+					<div class="col-md-3 text-center padded">
+						<a href="#" class="btn btn-default likes-link" id="likes-video-games">Video games</a> 
+					</div>
+					<div class="col-md-3 text-center padded">
+						<a href="#" class="btn btn-default likes-link" id="likes-poetry">Poetry</a>
+					</div>
+				</div>
+			</div>
+		</div>
+	</body>
+</html>
+
+<!--
+	<p id="likes" class="text-center">Likes: 
+					<a href="#" class="likes-link"><span id="likes-web-dev">Web development</span></a>, 
+					<a href="#" class="likes-link"><span id="likes-electronic-music">electronic music</span></a>, 
+					<a href="#" class="likes-link"><span id="likes-dancing">dancing</span></a>, 
+					<a href="#" class="likes-link"><span id="likes-coloring">coloring</span></a>, 
+					<a href="#" class="likes-link"><span id="likes-breakfast">breakfast</span></a>, 
+					<a href="#" class="likes-link"><span id="likes-producing-music">producing music</span></a>, 
+					<a href="#" class="likes-link"><span id="likes-video-games">video games</span></a>, 
+					<a href="#" class="likes-link"><span id="likes-poetry">poetry</span></a>, 
+					<a href="#" class="likes-link"><span id="likes-longboarding">longboarding</span></a>.</p>
+					-->

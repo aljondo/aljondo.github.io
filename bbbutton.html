@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>The Billboard Button</title>
+		<link rel='shortcut icon' type='image/x-icon' href='6.png' />
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+		<link href='https://fonts.googleapis.com/css?family=Raleway:400,300,700' rel='stylesheet' type='text/css'>
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+		<!-- Add fancyBox -->
+		<link rel="stylesheet" href="fancybox/source/jquery.fancybox.css?v=2.1.5" type="text/css" media="screen" />
+		<script type="text/javascript" src="fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+		<script type="text/javascript">
+			$(document).ready(function() {
+				$(".fancybox").fancybox();
+			});
+		</script>
+		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js" integrity="sha512-K1qjQ+NcF2TYO/eI3M6v8EiNYZfA95pQumfvcVrTHtwQVDG+aHRqLi/ETn2uB+1JqwYqVG3LIvdm9lj6imS/pQ==" crossorigin="anonymous"></script>
+		<link rel="stylesheet" type="text/css" href="style.css">
+	</head>
+	<body>
+		<div class="colored-font" id="projects">
+			<div id="nav" class="container nav-bar">
+	   			  <ul>
+	        	    <li><a class="nav-text" href="index.html" class="green-text">Home</a></li>
+	        	    <li class="nav-current-page">Projects</li>
+	        	    <li><a class="nav-text" href="skills.html" class="green-text">Skills</a></li>
+	        	    <li><a class="nav-text" href="interests.html">Interests</a></li>
+	        	    <li><a class="nav-text" href="contact.html">Contact</a><li>
+	    		  </ul>
+	  		</div>
+	  		<div class="container fade-in">
+	  			<div class="row">
+					<div class="col-md-5" id="project-overview">
+						<h2><a class="nav-text" href="projects.html">Back to Projects</a></h2>
+						<h1 class="text-center">The Billboard Button</h1>
+					  	<h3>Developed with Javascript leveraging jQuery</h3>	
+					  	<h3>The Billboard Button is a Chrome extension that, when pressed, opens up a new tab with the Billboard chart history of the currently playing artist in your chrome browser.</h3>
+					  	<h3>Coming soon to the Chrome Web Store.</h3>
+					  	<br>
+					</div>
+					<div class="col-md-7" id="project-picture">
+						<div id="myCarousel" class="carousel slide" data-ride="carousel" data-interval="false">
+						  <!-- Indicators -->
+						  <ol class="carousel-indicators hidden">
+						    <li data-target="#myCarousel" data-slide-to="0" class="active"></li>
+						    <li data-target="#myCarousel" data-slide-to="1"></li>
+						  </ol>
+
+						  <!-- Wrapper for slides -->
+						  <div class="carousel-inner" role="listbox">
+						    <div class="item active">
+						      	<a class="fancybox" rel="screenshots" href="pictures/billboard/screenshot1.png" target="_blank">
+									<img class="center-block" id="project-screenshot" src="pictures/billboard/screenshot1.png" width="100%">
+								</a>
+						    </div>
+
+						    <div class="item">
+						    	<a class="fancybox" rel="screenshots" href="pictures/billboard/screenshot2.png" target="_blank">
+									<img class="center-block" id="project-screenshot" src="pictures/billboard/screenshot2.png" width="100%">
+								</a>
+						    </div>
+						  </div>
+
+						  <!-- Left and right controls -->
+						  <a class="left carousel-control" href="#myCarousel" role="button" data-slide="prev">
+						    <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
+						    <span class="sr-only">Previous</span>
+						  </a>
+						  <a class="right carousel-control" href="#myCarousel" role="button" data-slide="next">
+						    <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+						    <span class="sr-only">Next</span>
+						  </a>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</body>
+</html>
+

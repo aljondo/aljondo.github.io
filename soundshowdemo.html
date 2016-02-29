@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Soundshow</title>
+		<link rel='shortcut icon' type='image/x-icon' href='6.png' />
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+		<link href='https://fonts.googleapis.com/css?family=Raleway:400,300,700' rel='stylesheet' type='text/css'>
+  		<link type="text/css" rel="stylesheet" href="soundshow/landing-page-style.css"/>
+  		<script src="soundshow/landing-page-script.js"></script>
+  		<script src="soundshow/waveformscript.js"></script>
+  		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+  		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
+		<link rel="stylesheet" type="text/css" href="style.css">
+	</head>
+	<body>
+		<div class="colored-font" id="projects">
+			<div id="nav" class="container nav-bar">
+	   			  <ul>
+	        	    <li><a class="nav-text" href="index.html" class="green-text">Home</a></li>
+	        	    <li class="nav-current-page">Projects</li>
+	        	    <li><a class="nav-text" href="skills.html" class="green-text">Skills</a></li>
+	        	    <li><a class="nav-text" href="interests.html">Interests</a></li>
+	        	    <li><a class="nav-text" href="contact.html">Contact</a><li>
+	    		  </ul>
+	  		</div>
+	  		<div class="container" id="soundshow-demo">
+	  			  <input type="file" accept="audio/*">
+				  <audio controls class="hide-this-shit" id="uploaded-song"></audio>
+				  <!--<div id="overlay"></div>-->
+				  <div id="music-player">
+				  	<div id="instructions">
+				  		<h2>1. Upload a song*</h2>
+				  		<h2>2. Once the waveform generates, right click to place a light event</h2>
+				  		<h2>3. Left click the waveform to skip around the song!</h2>
+				  		<h4 class="text-center">*Only compatible with MP3 files</h4>
+
+				  	</div>
+				      <div id="music-timer" class="hide-first">
+				        <p id="music-timer-text">0:00<p>
+				      </div>
+				      <div id="music-waveform" class="waveform">
+				        <div id="svg" style="width:100%;"></div>
+				      </div>
+				      <div id="comment-section">
+				        <p></p>
+				      </div>
+				    </div>
+				    <div id="buttons">
+				      <div class="button-left" id="play-pause-button">
+				      	<i id="fa-play" class="fa fa-play-circle fa-4x" onClick="play()"></i> 
+				      </div>
+				      <div class="button-left zoom hide-first" id="zoom-button">
+				      	<i id="fa-zoom" class="fa fa-plus-circle fa-4x"></i>
+				      </div>
+				    </div>
+				    <div id="lights-bar, png">
+
+				    </div>
+				  <script>
+				  var png = document.querySelector('#png'),
+				      svg = document.querySelector('#svg');
+				  document.querySelector('input').addEventListener('change', function(e) {
+				    svg.src = '';
+				    document.querySelector('audio').src = URL.createObjectURL(e.target.files[0]);
+				    var reader = new FileReader();
+				    reader.onload = function(event) {
+				        var settings = {
+				          bar: {
+				            align:'center', 
+				            width:1, 
+				            gap: 0
+				          },
+				          waveform: {
+				            color: '#efefef',
+				            width: 1000,
+				            height: 50
+				          }
+				      };
+				        new WaveformGenerator(event.target.result, settings).then(function(s) {
+				          document.querySelector('#svg').innerHTML = s;
+				          //$('#music-waveform').css('mask',"url('exwave.png')")
+
+				          //document.getElementById("music-waveform").style.backgroundColor = "#000"
+				          init();
+				        });
+				    };
+				    reader.readAsArrayBuffer(e.target.files[0]);
+				  }, false);
+				  </script>
+				  <script>
+
+				  //$("#zoom-in-button").click(ZoomIn());
+				  
+				  </script>
+				  <nav id="context-menu" class="context-menu">
+				    <ul class="context-menu__items">
+				      <li class="context-menu__item">
+				        <a href="#" class="context-menu__link" id="redLink" onClick="addLightEventFromContextMenu('red')">Add red light event</a>
+				      </li>
+				      <li class="context-menu__item">
+				        <a href="#" class="context-menu__link" id="orangeLink" onClick="addLightEventFromContextMenu('orange')">Add orange light event</a>
+				      </li>
+				      <li class="context-menu__item">
+				        <a href="#" class="context-menu__link" id="greenLink" onClick="addLightEventFromContextMenu('green')">Add green light event</a>
+				      </li>
+				      <li class="context-menu__item">
+				        <a href="#" class="context-menu__link" id="blueLink" onClick="addLightEventFromContextMenu('blue')">Add blue light event</a>
+				      </li>
+				      <li class="context-menu__item">
+				        <a href="#" class="context-menu__link" id="purpleLink" onClick="addLightEventFromContextMenu('purple')">Add purple light event</a>
+				      </li>
+				      <li class="context-menu__item">
+				        <a href="#" class="context-menu__link" id="whiteLink" onClick="addLightEventFromContextMenu('white')">Add white light event</a>
+				      </li>
+				      <li class="context-menu__item">
+				        <a href="#" class="context-menu__link" id="blackLink" onClick="addLightEventFromContextMenu('black')">Add black light event</a>
+				      </li>
+				    </ul>
+				  </nav>
+	  		</div>
+		</div>
+	</body>
+</html>
+

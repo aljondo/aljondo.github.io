@@ -1,0 +1,275 @@
+body {
+  font-family: 'Raleway';
+  font-weight: 400;
+  background-color: #1d2120;
+  /*background-color: #272822;*/
+}
+
+.colored-font {
+	color: #DCDDC5;
+  background-color: #1d2120;
+}
+
+.nav-bar {
+  border-bottom-style: solid;
+  margin-bottom: 4vh;
+}
+
+ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 5vh 0;
+}
+
+#nav li {
+	display: inline;
+	font-size: 7vh;
+	padding: 0 2vh;
+}
+
+.nav-current-page {
+	color: #A05125;
+}
+.nav-text {
+  /*color: #E4DEFF;*/
+  color: #157A6E;
+  -o-transition:.3s linear;
+  -ms-transition:.3s linear;
+  -moz-transition:.3s linear;
+  -webkit-transition:.3s linear;
+  transition:.3s linear;
+}
+
+.nav-text:hover {
+  color: #A05125;
+  text-decoration: none;
+}
+
+.title {
+	font-size: 10vh;
+	letter-spacing: 2px;
+}
+
+/*home page*/
+#home {
+	padding: 2vh;
+}
+
+#big-name {
+	font-size: 15vh;
+	letter-spacing: 2px;
+	padding: 7vh;
+}
+
+/*projects page*/
+#projects {
+	padding: 2vh;
+}
+
+.a-coding-project {
+	margin-top: 2vh;
+	margin-bottom: 2vh;
+}
+
+/*.a-coding-project a img {
+    display: inline-block;
+    background: #A05125;
+    padding: 0;
+}
+
+.a-coding-project a img {
+    display: block;
+
+    -webkit-transition: all 0.4s linear;
+       -moz-transition: all 0.4s linear;
+        -ms-transition: all 0.4s linear;
+         -o-transition: all 0.4s linear;
+            transition: all 0.4s linear;
+}
+
+.a-coding-project:hover img {
+    opacity: 0.5;
+}*/
+
+@media (min-width: 992px) {
+  #project-screenshot {
+    margin-top: 7vh;
+}
+
+/*skills page*/
+#skills {
+	padding: 2vh;
+}
+
+#padded-even-more {
+	padding-left: 5vh;
+	padding-right: 5vh;
+}
+
+.top-padding {
+   padding-top: 4vh;
+}
+
+/*soundshow demo*/
+#context-menu {
+  font-weight: 500;
+  padding: none;
+  text-decoration: none;
+}
+
+.context-menu__link:hover {
+    text-decoration: none;
+}
+
+.hide-first {
+  display: none;
+}
+
+/*interests page*/
+#interests {
+	padding: 2vh;
+}
+
+.hidden-buttons {
+  display: none;
+}
+
+#likes {
+	font-size: 5vh;
+	letter-spacing: 2px;
+	padding-left: 30vh;
+	padding-right: 30vh;
+}
+
+.likes-link:link {
+	text-decoration: none;
+}
+
+.padded {
+	padding: 1vh;
+}
+
+#picture-box {
+	height: 175px;
+}
+
+.likes-videos {
+	display: none;
+	width: 300px;
+}
+
+.hidden-image {
+  display: none;
+}
+
+#triforce {
+	width: 150px;
+}
+
+#coloring {
+  width: 200px;
+}
+
+#longboarding {
+  width: 150px;
+}
+
+#webdev {
+  width: 300px;
+}
+
+.center-image {
+	margin-left: auto;
+    margin-right: auto;
+}
+
+/*buttons!*/
+.btn {
+    padding: 14px 24px;
+    border: 0 none;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    background: #DCDDC5;
+    -o-transition: .1s linear;
+  -ms-transition:.1s linear;
+  -moz-transition:.1s linear;
+  -webkit-transition:.1s linear;
+  transition:.1s linear;
+}
+ 
+.btn:focus, .btn:active:focus, .btn.active:focus {
+    outline: 0 none;
+}
+
+.btn:hover {
+  background-color: #A05125
+}
+ 
+.btn-primary {
+    background: #D8D8F6;
+    color: #f6f1ed;
+}
+ 
+.btn-primary:hover, .btn-primary:focus, .btn-primary:active, .btn-primary.active, .open > .dropdown-toggle.btn-primary {
+    background: #33a6cc;
+}
+ 
+.btn-primary:active, .btn-primary.active {
+    background: #007299;
+    box-shadow: none;
+}
+
+/*contact*/
+#me {
+
+}
+
+.padded-more {
+  padding-right: 7vh
+}
+
+.social-button {
+  color: #157A6E;
+  -o-transition:.3s linear;
+  -ms-transition:.3s linear;
+  -moz-transition:.3s linear;
+  -webkit-transition:.3s linear;
+  transition:.3s linear;
+}
+
+.social-button:visited {
+  color: #157A6E;
+}
+
+.social-button:hover {
+  color: #A05125;
+}
+
+
+/*fade ins*/
+/* make keyframes that tell the start state and the end state of our object */
+@-webkit-keyframes fadeIn { from { opacity:0; } to { opacity:1; } }
+@-moz-keyframes fadeIn { from { opacity:0; } to { opacity:1; } }
+@keyframes fadeIn { from { opacity:0; } to { opacity:1; } }
+
+.fade-in {
+  opacity:0;  /* make things invisible upon start */
+  -webkit-animation:fadeIn ease-in 1;  /* call our keyframe named fadeIn, use animattion ease-in and repeat it only 1 time */
+  -moz-animation:fadeIn ease-in 1;
+  animation:fadeIn ease-in 1;
+
+  -webkit-animation-fill-mode:forwards;  /* this makes sure that after animation is done we remain at the last keyframe value (opacity: 1)*/
+  -moz-animation-fill-mode:forwards;
+  animation-fill-mode:forwards;
+
+  -webkit-animation-duration:.5s;
+  -moz-animation-duration:.5s;
+  animation-duration:.5s;
+}
+
+.fade-in.one {
+-webkit-animation-duration: 1s;
+  -moz-animation-duration: 1s;
+  animation-duration: 1s;
+}

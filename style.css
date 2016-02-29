@@ -71,7 +71,7 @@ ul {
 	margin-bottom: 2vh;
 }
 
-/*.a-coding-project a img {
+.a-coding-project a img {
     display: inline-block;
     background: #A05125;
     padding: 0;
@@ -89,7 +89,7 @@ ul {
 
 .a-coding-project:hover img {
     opacity: 0.5;
-}*/
+}
 
 @media (min-width: 992px) {
   #project-screenshot {

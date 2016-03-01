@@ -5,7 +5,7 @@ var $triforce;
 var $coloring;
 var $poetry;
 var $longboarding;
-var $feels;
+var $mind;
 var $loseit;
 var $twice;
 var $webdev
@@ -14,7 +14,7 @@ function init(){
 	$nav = $("nav");
 	//jquery dom elements for fade-ins etc
 	$triforce = $("#triforce");
-	$feels = $("#feels-like-home");
+	$mind = $("#mind");
 	$loseit = $("#lose-it");
 	$twice = $("#twice");
 	$coloring = $("#coloring");
@@ -42,7 +42,7 @@ function mouseOverListener(e) {
 			break;
 		case('likes-electronic-music'):
 			fadeColor("red")
-			displayThumbnail($feels);
+			displayThumbnail($mind);
 			break;
 		case('likes-dancing'):
 			fadeColor("orange")

@@ -61,13 +61,13 @@
 					<img class="center-block hidden-image-pls" id="coloring" src="pictures/coloring.jpg">				
 				</a>
 				<a class="fancybox" href="pictures/longboarding.jpg">
-					<img class="center-block hidden-image-pls" id="longboarding" src="pictures/longboarding.jpg">				
+					<img class="center-block hidden-image-pls" id="longboarding" src="pictures/longboarding.png">				
 				</a>
-				<a href="projects.html">
-					<img class="center-block hidden-image-pls" id="webdev" src="pictures/soundshow/soundshow.png">				
+				<a class="fancybox" href="#web-dev-fancy-box">
+					<img class="center-block hidden-image-pls" id="webdev" src="pictures/nuacm.png">				
 				</a>
 				<h4 class="hidden-image-pls text-center" id="poetry">Coming Soon</h3>
-				<iframe class="center-block likes-videos" id="feels-like-home" src="https://www.youtube.com/embed/TaH6Qg8Pykw" frameborder="0" allowfullscreen></iframe>
+				<iframe class="center-block likes-videos" id="mind" src="https://www.youtube.com/embed/fDrTbLXHKu8" frameborder="0" allowfullscreen></iframe>
 				<iframe class="center-block likes-videos" id="lose-it" src="https://www.youtube.com/embed/VgwcPiCjQ-0" frameborder="0" allowfullscreen></iframe>	
 				<iframe class="center-block likes-videos" id="twice" scrolling="no" frameborder="no" src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/224648272%3Fsecret_token%3Ds-2KHFx&amp;auto_play=false&amp;hide_related=false&amp;show_comments=true&amp;show_user=true&amp;show_reposts=false&amp;visual=true"></iframe>
 			</div>
@@ -78,24 +78,24 @@
 			<div id="buttons" class="container fade-in hidden-buttons">
 				<div class="row"> 
 					<div class="col-md-3 text-center padded">
-						<a href="projects.html" class="btn btn-default likes-link" id="likes-web-dev">Web development</a> 
+						<a href="#web-dev-fancybox" class="btn btn-default likes-link fancybox" id="likes-web-dev">Web development</a> 
 					</div>
 					<div class="col-md-3 text-center padded">
-						<a href="https://www.youtube.com/embed/TaH6Qg8Pykw" class="btn btn-default likes-link" id="likes-electronic-music">Electronic music</a>
+						<a href="https://www.youtube.com/watch?v=fDrTbLXHKu8" target="_blank" class="btn btn-default likes-link" id="likes-electronic-music">Electronic music</a>
 					</div>
 					<div class="col-md-3 text-center padded">
-						<a href="https://www.youtube.com/embed/VgwcPiCjQ-0" class="btn btn-default likes-link" id="likes-dancing">Dancing</a>
+						<a href="https://www.youtube.com/watch?v=VgwcPiCjQ-0" target="_blank" class="btn btn-default likes-link" id="likes-dancing">Dancing</a>
 					</div>
-					<div class="col-md-3 text-center padded" id="likes-coloring">
-						<a href="pictures/coloring.jpg" class="btn btn-default likes-link fancybox">Coloring</a>
+					<div class="col-md-3 text-center padded">
+						<a href="pictures/coloring.jpg" class="btn btn-default likes-link fancybox" id="likes-coloring">Coloring</a>
 					</div>
 				</div>
 				<div class="row">
-					<div class="col-md-3 text-center padded" id="likes-longboarding">
-						<a href="pictures/longboarding.jpg" class="btn btn-default likes-link fancybox">Longboarding</a>
+					<div class="col-md-3 text-center padded">
+						<a href="pictures/longboarding.png" class="btn btn-default likes-link fancybox" id="likes-longboarding">Longboarding</a>
 					</div>
 					<div class="col-md-3 text-center padded">
-						<a href="projects.html" class="btn btn-default likes-link" id="likes-producing-music">Producing music</a> 
+						<a href="#music-production-fancybox" class="btn btn-default likes-link fancybox" id="likes-producing-music">Producing music</a> 
 					</div>
 					<div class="col-md-3 text-center padded">
 						<a href="pictures/triforce.jpg" class="btn btn-default likes-link fancybox" id="likes-video-games">Video games</a> 
@@ -105,6 +105,19 @@
 					</div>
 				</div>
 			</div>
+		</div>
+		<div id="web-dev-fancybox" class="colored-font" style="display: none">
+			<h1 class="text-center">Web Development</h1>
+				<img class="center-block padded" id="nuacm" src="pictures/nuacm.png">
+				<h4 class="padded" id="web-dev-blurb">After learning how to code back-end for 3 years, I realized that some of the ideas floating around in my head were better suited for websites. However, implementation proved to be more complicated than just learning another programming language. A website needs to look aesthetically pleasing while offering a streamlined and simple user experience, and I always keep those goals in mind when working on a project.</h4>
+				<a href="projects.html" class="btn btn-default likes-link center-block">Check out my projects!</a> 
+		</div>
+		<div id="music-production-fancybox" class="colored-font" style="display: none">
+			<h1 class="text-center">Web Development</h1>
+				<iframe class="center-block padded" id="nuacm" scrolling="no" frameborder="no" src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/224648272%3Fsecret_token%3Ds-2KHFx&amp;auto_play=false&amp;hide_related=false&amp;show_comments=true&amp;show_user=true&amp;show_reposts=false&amp;visual=true"></iframe>
+				<h4 class="padded" id="web-dev-blurb">I've been a musician my whole life. A few years ago, I became interested in electronic music production, so I downloaded FL Studio and began bringing my compositions to life.
+				My recent project, Wander A.M., is the focus of those efforts. Click the button below to hear more of my songs!.</h4>
+				<a href="projects.html" class="btn btn-default likes-link center-block">More songs!</a> 
 		</div>
 	</body>
 </html>

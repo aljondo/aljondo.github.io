@@ -85,7 +85,7 @@ ul {
 	margin-bottom: 6vh;
 }
 
-.project-thumbnail img {
+/*.project-thumbnail img {
     display: inline-block;
     background: #A05125;
     padding: 0;
@@ -102,7 +102,16 @@ ul {
 }
 
 .project-thumbnail:hover img {
-    opacity: 0.5;
+    opacity: 0.2;
+}*/
+
+.project-thumbnail {
+
+}
+.project-thumbnail:hover {
+  outline: none;
+  border-color: #CCFBFE;
+  box-shadow: 0 0 10px #E01A4F;
 }
 
 .project-thumbnail {

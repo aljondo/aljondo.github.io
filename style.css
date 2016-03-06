@@ -307,13 +307,13 @@ ul {
   -moz-animation-fill-mode:forwards;
   animation-fill-mode:forwards;
 
-  -webkit-animation-duration:.5s;
-  -moz-animation-duration:.5s;
-  animation-duration:.5s;
+  -webkit-animation-duration:.2s;
+  -moz-animation-duration:.2s;
+  animation-duration:.2s;
 }
 
 .fade-in.one {
--webkit-animation-duration: 1s;
-  -moz-animation-duration: 1s;
-  animation-duration: 1s;
+-webkit-animation-duration: .5s;
+  -moz-animation-duration: .5s;
+  animation-duration: .5s;
 }

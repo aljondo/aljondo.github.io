@@ -12,7 +12,7 @@ body {
 
 .nav-bar {
   border-bottom-style: solid;
-  margin-bottom: 4vh;
+  margin-bottom: 4vh;dec
 }
 
 ul {
@@ -42,6 +42,10 @@ ul {
 
 .nav-text:hover {
   color: #A05125;
+  text-decoration: none;
+}
+
+.nav-text:visited {
   text-decoration: none;
 }
 
@@ -118,7 +122,7 @@ ul {
   display: block;
   margin-right: auto;
   margin-left: auto;
-  width: 40vh;
+  width: 40decvh;
 }
 
 @media (min-width: 992px) {

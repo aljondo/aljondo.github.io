@@ -65,11 +65,11 @@ ul {
   width: 100vh;
 }
 
-@media (max-width: 765px) {
+/*@media (max-width: 765px) {
   #thing {
     width: 80%;
 }
-}
+}*
 
 /*projects page*/
 #projects {
@@ -265,8 +265,12 @@ ul {
 }
 
 /*contact*/
-#me {
+#contact-title {
+  padding-bottom: 4vh;
+}
 
+#me {
+  border-radius: 3%;
 }
 
 .padded-more {

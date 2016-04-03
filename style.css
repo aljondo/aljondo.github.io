@@ -118,7 +118,7 @@ ul {
   display: block;
   margin-right: auto;
   margin-left: auto;
-  width: 35vh;
+  width: 20vw;
 }
 
 @media (min-width: 992px) {

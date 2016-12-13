@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Projections</title>
+		<link rel='shortcut icon' type='image/x-icon' href='6.png' />
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+		<link href='https://fonts.googleapis.com/css?family=Raleway:400,300,700' rel='stylesheet' type='text/css'>
+		<link rel="stylesheet" type="text/css" href="style.css">
+
+		<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/d3/4.4.0/d3.min.js"></script>
+		<script type="text/javascript" src="http://code.highcharts.com/highcharts.js"></script>
+		<script src="https://code.jquery.com/jquery-3.1.1.min.js" integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8=" crossorigin="anonymous"></script>
+	</head>
+	<body>
+		<div class="colored-font" id="projections">
+	  		<div class="container fade-in">
+	  			<h2 class="text-center">The 2016 Ryan Projections</h2>
+	  			<div id="line-chart" style="height: 9000px, width: 100%">
+				</div>
+				<button onclick="sendComplaint()" style="color: #000">Send complaint</button>
+				<p style="opacity: 0;" id="complaint">Complaint Submitted!</p>
+			</div>
+		</div>
+		<script type="text/javascript">
+			console.log("TESTING");
+			var coopLineData = {
+				"Price": [],
+				"Claire": [],
+				"Speedy": [],
+				"Nick": [],
+				"Devin": [],
+				"Marta": [],
+			};
+
+			//add price data
+			addDataPoint("Price", Date.UTC(2016, 6, 1), 3.5);
+			addDataPoint("Price", Date.UTC(2016, 7, 1), 2.7, "Price whistles too much"); //Price whistled too much
+			addDataPoint("Price", Date.UTC(2016, 8, 1), 5);
+			addDataPoint("Price", Date.UTC(2016, 9, 1), 6.5);
+			addDataPoint("Price", Date.UTC(2016, 9, 21), 4); //birthday
+			addDataPoint("Price", Date.UTC(2016, 10, 15), 10, "THE SHIRT"); //THE SHIRT
+			addDataPoint("Price", Date.UTC(2016, 11, 1), 7);
+			addDataPoint("Price", Date.UTC(2016, 11, 9, 20), 8, "Price throws the fuck down");//the party
+			addDataPoint("Price", Date.UTC(2016, 11, 13), 7.5);
+
+			addDataPoint("Claire", Date.UTC(2016, 6, 1), 5);
+			addDataPoint("Claire", Date.UTC(2016, 7, 1), 5);
+			addDataPoint("Claire", Date.UTC(2016, 8, 1), 5.5);
+			addDataPoint("Claire", Date.UTC(2016, 8, 5), 6.5, "BIKING"); //biking!, note that speedy joins us
+			addDataPoint("Claire", Date.UTC(2016, 8, 28), 7, "First team win in foosball"); 
+			addDataPoint("Claire", Date.UTC(2016, 9, 21), 8, "CLAIRE WAS THE ONLY ONE WHO WENT TO MY BIRTHDAY"); 
+			addDataPoint("Claire", Date.UTC(2016, 10, 15), 8); 
+			addDataPoint("Claire", Date.UTC(2016, 11, 8), 8);
+			addDataPoint("Claire", Date.UTC(2016, 11, 9, 11), 3);//lol
+			addDataPoint("Claire", Date.UTC(2016, 11, 9, 20), 7);//party
+			addDataPoint("Claire", Date.UTC(2016, 11, 13), 8);
+
+			addDataPoint("Marta", Date.UTC(2016, 6, 1), 3.5);
+			addDataPoint("Marta", Date.UTC(2016, 6, 15), 4.5); 
+			addDataPoint("Marta", Date.UTC(2016, 8, 1), 5);
+			addDataPoint("Marta", Date.UTC(2016, 9, 1), 5.5);
+			addDataPoint("Marta", Date.UTC(2016, 9, 21), 4); //birthday
+			addDataPoint("Marta", Date.UTC(2016, 9, 27), 10, "Marta invites everyone to Whiskey Saigon then ditches them. Respect."); 
+			addDataPoint("Marta", Date.UTC(2016, 10, 15), 6.5); 
+			addDataPoint("Marta", Date.UTC(2016, 11, 1), 6.5);
+			addDataPoint("Marta", Date.UTC(2016, 11, 9, 20), 4, "MARTA SKIPS THE PARTY");
+			addDataPoint("Marta", Date.UTC(2016, 11, 13), 7);
+
+			addDataPoint("Speedy", Date.UTC(2016, 6, 1), 3.5);
+			addDataPoint("Speedy", Date.UTC(2016, 7, 1), 4); 
+			addDataPoint("Speedy", Date.UTC(2016, 8, 1), 5.5);
+			addDataPoint("Speedy", Date.UTC(2016, 8, 15), 4, "The nature of Speedy's back-and-forth is due to how I feel when I play foosball against him");
+			addDataPoint("Speedy", Date.UTC(2016, 9, 1), 5.5, "Playing foos against Speedy makes me sad."); 
+			addDataPoint("Speedy", Date.UTC(2016, 9, 21), 4); //birthday 
+			addDataPoint("Speedy", Date.UTC(2016, 10, 1), 5.5); 
+			addDataPoint("Speedy", Date.UTC(2016, 10, 15), 4);
+			addDataPoint("Speedy", Date.UTC(2016, 11, 1), 5.5);
+			addDataPoint("Speedy", Date.UTC(2016, 11, 9, 20), 7);
+			addDataPoint("Speedy", Date.UTC(2016, 11, 13), 7.5);
+
+			addDataPoint("Nick", Date.UTC(2016, 6, 1), 3.5);
+			addDataPoint("Nick", Date.UTC(2016, 7, 1), 4); 
+			addDataPoint("Nick", Date.UTC(2016, 8, 1), 4.5);
+			addDataPoint("Nick", Date.UTC(2016, 9, 1), 5);
+			addDataPoint("Nick", Date.UTC(2016, 10, 1), 6); 
+			addDataPoint("Nick", Date.UTC(2016, 10, 15), 3, "Apparently 'I know Nick Dimaroo' doesn't get me in his party"); 
+			addDataPoint("Nick", Date.UTC(2016, 11, 1), 6); 
+			addDataPoint("Nick", Date.UTC(2016, 11, 9), 3, "Picks glasses over Price's party");
+			addDataPoint("Nick", Date.UTC(2016, 11, 13), 7)
+
+			addDataPoint("Devin", Date.UTC(2016, 6, 3), 3.5);
+			addDataPoint("Devin", Date.UTC(2016, 7, 3), 4); 
+			addDataPoint("Devin", Date.UTC(2016, 8, 3), 4.5);
+			addDataPoint("Devin", Date.UTC(2016, 9, 3), 5);
+			addDataPoint("Devin", Date.UTC(2016, 10, 3), 6); 
+			addDataPoint("Devin", Date.UTC(2016, 11, 3), 6); 
+			addDataPoint("Nick", Date.UTC(2016, 11, 9), 7);
+			addDataPoint("Nick", Date.UTC(2016, 11, 13), 7)
+
+			function addDataPoint(name, date, value, text) {
+				var obj = {};
+				obj["value"] = [date, value];
+				if(text) {
+					obj["text"] = text;
+				}
+				else {
+					obj["text"] = ""
+				}
+				coopLineData[name].push(obj)
+			}
+
+			lineChart();
+
+			function lineChart() {
+				var values = {};
+				for(c in coopLineData) {
+					values[c] = [];
+					for(i in coopLineData[c]) {
+						values[c].push(coopLineData[c][i]["value"])
+					}
+				}
+				console.log(values)
+			    var favorabilityChart = Highcharts.chart('line-chart', {
+			    	chart: {
+
+			    	},
+			        title: {
+			            text: 'Favorability over time',
+			            x: -20 //center
+			        },
+			        xAxis: {
+			        	type: 'datetime'
+			            //categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+			                //'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'] 
+			                //this should be used
+			        },
+			        yAxis: {//maybe model after Claire/Price's?
+			            title: {
+			                text: ''
+			            },
+			            plotLines: [{
+			                value: 0,
+			                width: 1,
+			                color: '#808080'
+			            }]
+			        },
+			        tooltip: {
+			        	formatter: function() {
+			        		if(coopLineData[this.series.name][this.point.index]["text"] != "") {
+			        			return '<b>' + this.series.name + ' </b> <br>' + coopLineData[this.series.name][this.point.index]["text"]	
+			        		}
+			        		else {
+			        			return this.series.name;
+			        		}
+					    }
+			        },
+			        legend: {
+			            layout: 'vertical',
+			            align: 'right',
+			            verticalAlign: 'middle',
+			            borderWidth: 0
+			        },
+			        series: [{
+			            name: 'Price',
+			            data: values["Price"]
+			        }, {
+			            name: 'Claire',
+			            data: values["Claire"]
+			        }, {
+			            name: 'Nick',
+			            data: values["Nick"]
+			        }, {
+			            name: 'Devin',
+			            data: values["Devin"]
+			        }, {
+			        	name: 'Marta',
+			        	data: values["Marta"]
+			        }, {
+			        	name: 'Speedy',
+			        	data: values["Speedy"]
+			        }]
+			    });
+			}
+
+			function sendComplaint() {
+				var text = d3.select("#complaint")
+				
+				text.style('opacity', 1);
+				
+				text.transition()
+		            .duration(1000)
+		            .style('opacity', 0);
+			}
+		</script>
+	</body>
+</html>
+

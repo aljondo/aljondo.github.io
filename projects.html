@@ -78,7 +78,8 @@
 		  var stateKey = 'spotify_auth_state';
 	      var client_id = '91447869cdba4a8abf2a141784665052'; // Your client id
 	      var redirect_uri = 'https://aljondo.github.io/spotify100/insights.html'; // Your redirect uri
-
+	      console.log("REDIRECT")
+	      console.log(redirect_uri)
 	      var state = generateRandomString(16);
 
 	      localStorage.setItem(stateKey, state);

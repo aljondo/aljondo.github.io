@@ -1,0 +1,1819 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Example of the Authorization Code flow with Spotify</title>
+    <!--<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">-->
+    <!--<link href = "https://code.jquery.com/ui/1.10.4/themes/ui-lightness/jquery-ui.css" rel = "stylesheet">-->
+    <style type="text/css">
+      @font-face {
+        font-family: "Avenir Book";
+        src: url('fonts/Avenir-Book.ttf');
+      }
+
+      @font-face {
+        font-family: "Avenir Light";
+        src: url('fonts/Avenir-Light.ttf');
+      }
+
+      @font-face {
+        font-family: "Avenir Heavy";
+        src: url('fonts/Avenir-Heavy.ttf');
+      }
+
+      text.mono {
+        font-size: 9pt;
+        font-family: Consolas, courier;
+        fill: #aaa;
+      }
+
+      #login, #loggedin {
+        display: none;
+      }
+      .text-overflow {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        width: 500px;
+      }
+
+      .node {
+        cursor: pointer;
+      }
+
+      .old-node:hover {
+        stroke: #000;
+        stroke-width: 1.5px;
+      }
+
+      .node--leaf {
+        fill: white;
+      }
+
+      .label {
+        font: 11px "Helvetica Neue", Helvetica, Arial, sans-serif;
+        text-anchor: middle;
+        text-shadow: 0 1px 0 #fff, 1px 0 0 #fff, -1px 0 0 #fff, 0 -1px 0 #fff;
+      }
+
+      .label,
+      .node--root,
+      .node--leaf {
+        pointer-events: none;
+      }
+
+      .in-focus {
+        pointer-events: all;
+      } 
+
+      .out-of-focus {
+        pointer-events: none;
+      }
+
+      /*bubble chart stuff*/
+      a, a:visited, a:active {
+        color: #444;
+      }
+
+      .container {
+        max-width: 900px;
+        margin: auto;
+      }
+
+      .button {
+        min-width: 130px;
+        padding: 4px 5px;
+        cursor: pointer;
+        text-align: center;
+        font-size: 13px;
+        border: 1px solid #e0e0e0;
+        text-decoration: none;
+      }
+
+      .button.active {
+        background: #000;
+        color: #fff;
+      }
+
+
+      #vis {
+        width: 940px;
+        height: 600px;
+        clear: both;
+        margin-bottom: 10px;
+      }
+
+      #toolbar {
+        margin-top: 10px;
+      }
+
+      .year {
+        font-size: 21px;
+        fill: #000;
+        cursor: default;
+        font-family: "Avenir Heavy;
+      }
+
+      .tooltip {
+        position: absolute;
+        top: 100px;
+        left: 100px;
+        -moz-border-radius:5px;
+        border-radius: 3px;
+        /*border: 1px solid #000;*/
+        outline: none;
+        /*border-color: #000;*/
+        box-shadow: 0 0 10px #000;
+        background: #fff;
+        opacity: .9;
+        color: black;
+        padding: 10px;
+        min-width: 200px;
+        font-size: 12px;
+        z-index: 10;
+      }
+
+      .tooltip .title {
+        font-size: 13px;
+      }
+
+      .tooltip .name {
+        font-weight: bold;
+      }
+
+      .tooltip .big {
+        font-family: "Avenir Light"; 
+        font-size: 15px;
+        /*font-style: italic;*/
+      }
+
+      .tooltip .small {
+        font-size: 13px;
+        /*font-style: italic;*/
+      }
+
+      .footer {
+        text-align: center;
+      }
+
+      #tabs {
+        width: 1100px;
+      }
+    </style>
+  </head>
+
+  <body id="top100div">
+    <div class="container">
+      <div id="login">
+        <h1>This is an example of the Authorization Code flow</h1>
+        <a href="/login" class="btn btn-primary">Log in with Spotify</a>
+      </div>
+      <div id="tabs">
+        <ul id="tab-list"></ul>
+      </div>
+      <div id="loggedin">
+        <div id="user-profile">
+        </div>
+        <div id="oauth">
+        </div>
+        <button class="btn btn-default" id="obtain-new-token">Obtain new token using the refresh token</button>
+      </div>
+      <svg id="genre-chart" width="960" height="960"></svg>
+      <svg style= "overflow:auto" id="album-chart" width="960" height="570"></svg>
+    </div>
+
+    <script id="user-profile-template" type="text/x-handlebars-template">
+      <h1>Logged in as {{display_name}}</h1>
+      <div class="media">
+        <div class="pull-left">
+          <img class="media-object" width="150" src="{{images.0.url}}" />
+        </div>
+        <div class="media-body">
+          <dl class="dl-horizontal">
+            <dt>Display name</dt><dd class="clearfix">{{display_name}}</dd>
+            <dt>Id</dt><dd>{{id}}</dd>
+            <dt>Email</dt><dd>{{email}}</dd>
+            <dt>Spotify URI</dt><dd><a href="{{external_urls.spotify}}">{{external_urls.spotify}}</a></dd>
+            <dt>Link</dt><dd><a href="{{href}}">{{href}}</a></dd>
+            <dt>Profile Image</dt><dd class="clearfix"><a href="{{images.0.url}}">{{images.0.url}}</a></dd>
+            <dt>Country</dt><dd>{{country}}</dd>
+          </dl>
+        </div>
+      </div>
+    </script>
+
+    <script id="oauth-template" type="text/x-handlebars-template">
+      <h2>oAuth info</h2>
+      <dl class="dl-horizontal">
+        <dt>Access token</dt><dd class="text-overflow">{{access_token}}</dd>
+        <dt>Refresh token</dt><dd class="text-overflow">{{refresh_token}}></dd>
+      </dl>
+    </script>
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/2.0.0-alpha.1/handlebars.min.js"></script>
+    <script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/4.5.0/d3.min.js"></script>
+    <script src = "https://code.jquery.com/jquery-1.10.2.js"></script>
+    <script src = "https://code.jquery.com/ui/1.10.4/jquery-ui.js"></script>
+    <link rel="stylesheet" type="text/css" href="../style.css">
+    <script>
+      var ryansSongs;
+
+      //global variables to store endpoint response jsons
+      var userJson = {};
+      var playListsJson = {};
+      var topSongsId; 
+      var topSongs ={};
+      var sound = new Audio(); //global sound variable to keep track of previews
+      
+      var artistsRanking = {};
+      var artistsRankingArray = [];
+
+      var albumRankings = {};
+      //genre counter. created from hardcoded keywords object
+      //each genre has a count (to be incremented with each song appropriately), keywords, and children
+      //the keywords help filter subgenres. if a subgenre (say, southern hip hop) has a rap keyword (like hip hop),
+      //then it goes under rap
+      //also a keyword counter. this is the "master list". when research is done, add to this list.
+      var genreKeywords = {
+        'rock': ['rock', 'punk'],
+        'rap': ['rap', 'hip hop', 'trap', 'hop'],
+        'pop': ['pop'],
+        'r&b': ['r&b', 'soul'],
+        'dance': ['techno', 'dance', 'edm', 'house', 'tropical'],
+        'folk': ['folk'],
+        'indie': ['indie'],
+        'metal': ['metal'],
+        'classical': ['classical'],
+        'country': ['country']
+      };
+
+      var genreCounter = {};
+      for(g in genreKeywords) {
+        genreCounter[g] = {
+          "count": 0,
+          "keywords": genreKeywords[g],
+          "children": {}
+        };
+      }
+      //console.log(genreCounter)
+      //temp, from example. populate html elements w profile info
+      var userProfileSource = document.getElementById('user-profile-template').innerHTML,
+      userProfileTemplate = Handlebars.compile(userProfileSource),
+      userProfilePlaceholder = document.getElementById('user-profile');
+
+      function preLoadData() {
+        topSongs = ryansSongs;
+        transformData();
+      }
+      //a function to chain ajax calls/keep them in the same place
+      function getUserData(step, access_token) {
+        //console.log("getuserdata called at step: " + step)
+        switch(step) {
+          case 0: $.ajax({
+                      url: 'https://api.spotify.com/v1/me',
+                      headers: {
+                        'Authorization': 'Bearer ' + access_token
+                      },
+                      success: function(response) {
+                        //userProfilePlaceholder.innerHTML = userProfileTemplate(response);
+                        userJson = response;
+                        console.log(userJson);
+                        $('#login').hide();
+                        $('#loggedin').show();
+                        getUserData(1, access_token);
+                      }
+                  });
+                  break;
+          case 1: $.ajax({
+                      url: 'https://api.spotify.com/v1/users/' + userJson.id + '/playlists?limit=50',
+                      headers: {
+                        'Authorization': 'Bearer ' + access_token
+                      },
+                      success: function(response) {
+                        console.log(response);
+                        for(i in response.items) {
+                          if(response.items[i].name == "Your Top Songs 2016") {
+                            topSongsId = response.items[i].id;
+                            console.log(topSongsId);
+                            break;
+                          }
+                        }
+                        console.log(topSongsId)
+                        getUserData(2, access_token);
+                      }
+                  });
+                  break;
+          case 2: $.ajax({
+                      url: 'https://api.spotify.com/v1/users/spotify/playlists/' + topSongsId,
+                      headers: {
+                        'Authorization': 'Bearer ' + access_token
+                      },
+                      success: function(response) {
+                        console.log("playlist")
+                        console.log(response);
+                        //populate top songs json
+                        var albumIds = [];
+                        for(i in response.tracks.items) {
+                          var track = response.tracks.items[i]["track"];
+                          var trackObj = {};
+                          trackObj["id"] = track["id"];
+                          trackObj["song_name"] = track["name"];
+                          trackObj["artist"] = track["artists"][0]["name"];
+                          trackObj["artist_id"] = track["artists"][0]["id"];
+                          trackObj["album"] = track["album"]["name"];
+                          trackObj["img_640"] = track["album"]["images"][0];
+                          trackObj["img_300"] = track["album"]["images"][1];
+                          trackObj["img_64"] = track["album"]["images"][2];
+                          trackObj["popularity"] = track["popularity"]
+                          trackObj["ranking"] = i;
+                          trackObj['preview'] = track['preview_url'];
+                          //trackObj["release_date"] = getReleaseDate(track["album"]["id"], access_token, i);
+                          albumIds.push(track["album"]["id"])
+                          topSongs[i] = trackObj;
+
+                        }
+                        //getReleaseDate(0, albumIds, access_token)
+                        console.log(albumIds[32])
+                        //call literally all the graphing functions
+                        //makeTabs();
+                        getGenres(0, access_token);
+                        //graphAlbums();
+                      }
+                  });
+        }
+      }
+
+      //recursiveish attempt to work with asynchronous calls. might wanna fix this later
+      //goes through each song in topSongs and gets their release date
+      function getReleaseDate(albumNum, albumIds, access_token) { 
+        console.log("getting release date??")
+        $.ajax({
+          url: 'https://api.spotify.com/v1/albums/' + albumIds[albumNum],
+          headers: {
+            'Authorization': 'Bearer ' + access_token
+          },
+          success: function(response) {
+            topSongs[albumNum]["release_date"] = response["release_date"];
+            if(albumNum != 99) {
+              getReleaseDate(albumNum + 1, albumIds, access_token)
+            }
+            else {
+              //console.log(response);
+              console.log("top songs")
+              console.log(topSongs)
+            }
+          }
+        });
+      }
+
+      function getGenres(songNum, access_token) {
+        //console.log(albumNum)
+        //console.log(albumNum + 1)
+        $.ajax({
+          url: 'https://api.spotify.com/v1/artists/' + topSongs[songNum]["artist_id"],
+          headers: {
+            'Authorization': 'Bearer ' + access_token
+          },
+          success: function(response) {
+            topSongs[songNum]["apiGenres"] = response["genres"];
+            topSongs[songNum]["artist_popularity"] = response["popularity"]
+            if(topSongs[songNum]["artist"] == "The Weeknd") {
+              topSongs[songNum]["apiGenres"].push("r&b", "alternative r&b");
+            }
+            if(songNum != 99) {
+              getGenres(songNum + 1, access_token)
+            }
+            else {
+              var dance = 0;
+              for(i in topSongs) {
+                var pls = true; 
+                //var dance = 0;
+                //console.log(topSongs[i]["artist"] + ": ")
+                var genreString = "";
+                for(g in topSongs[i]["apiGenres"]) {
+                  for(k in genreKeywords["dance"]) {
+                    if((topSongs[i]["apiGenres"][g].includes(genreKeywords["rap"][k])) && pls) {
+                      //console.log(topSongs[i]["song_name"])
+                      //console.log(pls)
+                      //console.log(genreKeywords["dance"][k])
+                      if(pls) {
+                        dance++
+                      }
+                      pls = false;
+                    }
+                  }
+                  genreString += topSongs[i]["apiGenres"][g] + ", ";
+                }
+                console.log(genreString);
+              }
+              //console.log(dance)
+              //graphGenres();
+              //makeTabs();
+              transformData();
+              //getLyrics();
+            }
+          }
+        })
+      }
+
+      //testin' that genius api
+      //let the record show that things didn't quite work
+      /*function getLyrics() {
+        var geniusAccess = 'o8QK_7JAjf6yqpW8ZhPpctXPI_9IP8asJBs9txgXfh1Libxe7ivlmdqYd-L0vHy_'
+        $.ajax({
+          url: 'https://api.genius.com/search?q=bounce%20back',
+          headers: {
+            'Authorization': 'Bearer ' + geniusAccess
+          },
+          success: function(response) {
+            console.log("genius api")
+            console.log(response)
+          }
+        });
+      }*/
+
+      function transformData() {
+        //topSongs = ryansSongs;
+        for(s in topSongs) {
+          if(!artistsRanking[topSongs[s]["artist"]]) {
+            var artistObj = {};
+            artistObj["count"] = 1;
+            artistsRanking[topSongs[s]["artist"]] = artistObj;
+          }
+          else {
+            artistsRanking[topSongs[s]["artist"]]["count"] ++;
+          }
+        }
+        for(a in artistsRanking) {
+          artistsRankingArray.push([a, artistsRanking[a]['count']]);
+        }
+        artistsRankingArray.sort(function(a, b) {
+          return b[1] - a[1];
+        })
+        //need to sort artists ranking
+        //console.log("ARTISTS");
+        //console.log(artistsRanking);
+        //console.log(artistsRankingArray)
+        makeTabs();
+      }
+
+      //counts totals of each genre as well as puts subgenres where they should be
+      //then it GRAPHS THEM
+      function graphGenres() {
+        //console.log("starting work")
+        //count genres
+        for(song in topSongs) {
+          var apiGenres = topSongs[song]['apiGenres'];
+          var genresIncremented = [];
+          for(g in apiGenres) {
+            for(key in genreKeywords) {
+              for(k in genreKeywords[key]) {//keywords. "key" is just the genre
+                
+                //if the genre in the song includes the keyword k, then 
+                //either add it to or increment the genre counter
+                if(apiGenres[g].includes(genreKeywords[key][k])) {//if the song genre has the keyword
+                  if(genreCounter[key]["children"][apiGenres[g]]) {
+                    genreCounter[key]["children"][apiGenres[g]] ++;
+                  }
+                  else {
+                    genreCounter[key]["children"][apiGenres[g]] = 1;
+                  }
+                  if(!genresIncremented.includes(key)) {
+                    genreCounter[key]["count"] ++;
+                    genresIncremented.push(key);
+                  }
+                }
+              }
+            }
+          }
+        }
+        //go through genre counter and scale
+        for(gen in genreCounter) {
+          var subCount = 0;
+          for(sub in genreCounter[gen]['children']) {
+            subCount += genreCounter[gen]['children'][sub];
+          }
+          var scale = subCount/genreCounter[gen]['count'];
+          for(sub in genreCounter[gen]['children']) {
+            var temp = genreCounter[gen]['children'][sub];
+            var subObj = {};
+            subObj["scaled"] = temp / scale;
+            subObj["count"] = temp;
+            genreCounter[gen]['children'][sub] = subObj;
+            //genreCounter[gen]['children'][sub] /= scale;
+          }
+        }
+
+        //create circle packing data
+        var circleJson = {
+          "name": "Genres",
+          "children": []
+        };
+        for(gen in genreCounter) {
+          var genObj = {
+            "name": gen,
+            "children": []
+          }
+          for(child in genreCounter[gen]["children"]) {
+            var childObj = {
+              "name": child,
+              "size": genreCounter[gen]["children"][child]["scaled"]
+            }
+            genObj["children"].push(childObj)
+          }
+          circleJson["children"].push(genObj);
+        }
+        //console.log(genreCounter)
+        //console.log(circleJson)
+        //console.log("DONE")
+
+        //go through genre counter and appropriately scale
+        /*for(gen in genreCounter) {
+          var subCount = 0;
+          for(sub in genreCounter[gen]['children']) {
+            subCount += genreCounter[gen]['children'][sub];
+          }
+          var scale = subCount/genreCounter[gen]['count'];
+          for(sub in genreCounter[gen]['children']) {
+            genreCounter[gen]['children'][sub] /= scale;
+          }
+        }*/
+        //for(gen in genreCounter["rock"]['children']) {
+          //genreCounter['rock']['children'][gen] += 20
+        //}
+
+        var tooltip = floatingTooltip('gates_tooltip', 240);
+
+
+
+        d3.select("#genre-tab")
+          .append('svg')
+          .attr("id", "genre-chart")
+          .attr("height", 800)
+          .attr("width", 800)
+
+        var svg = d3.select("#genre-chart"),
+            margin = 20,
+            diameter = +svg.attr("width"),
+            g = svg.append("g").attr("transform", "translate(" + diameter / 2 + "," + diameter / 2 + ")");
+
+        var color = d3.scaleLinear()
+            .domain([-1, 5])
+            .range(["hsl(152,80%,80%)", "hsl(228,30%,40%)"])
+            .interpolate(d3.interpolateHcl);
+
+        var pack = d3.pack()
+            .size([diameter - margin, diameter - margin])
+            .padding(2);
+
+        //d3.json(circleJson, function(error, root) {
+          //if (error) throw error;
+          var root = circleJson
+          root = d3.hierarchy(root)
+              .sum(function(d) { return d.size; })
+              .sort(function(a, b) { return b.value - a.value; });
+
+          var focus = root,
+              nodes = pack(root).descendants(),
+              view;
+
+          var circle = g.selectAll("circle")
+            .data(nodes)
+            .enter().append("circle")
+              .attr("class", function(d) { return d.parent ? d.children ? "node" : "node node--leaf" : "node node--root"; })
+              .style("fill", function(d) { return d.children ? color(d.depth) : null; })
+              .attr("stroke", "#000")
+              .style("stroke-width", 0)
+              .on("mouseover", function(d) {
+                showDetail(d);
+                d3.select(this) 
+                  .style("stroke-width", 1.5)
+              })
+              .on("mouseout", function(d) {
+                //console.log("HIDE")
+                hideDetail(d);
+                d3.select(this)
+                  .style("stroke-width", 0)
+              })
+              .on("click", function(d) { if (focus !== d) zoom(d), d3.event.stopPropagation(); });
+
+          var text = g.selectAll("text")
+            .data(nodes)
+            .enter().append("text")
+              .attr("class", "label")
+              .style("fill-opacity", function(d) { 
+                return d.parent === root ? 1 : 0; 
+              })
+              .style("font-size", function (d) {
+                if(d.r > 20) {
+                  return d.r / 2;
+                }
+                else {
+                  return d.r / 1.5;
+                }
+              })
+              .style("display", function(d) { return d.parent === root ? "inline" : "none"; }) //might be necessary...
+              .text(function(d) { return d.data.name; });
+
+          var node = g.selectAll("circle,text");
+
+          svg
+              //.style("background", color(-1))
+              .on("click", function() { zoom(root); });
+
+          zoomTo([root.x, root.y, root.r * 2 + margin]);
+
+          function zoom(d) {
+            var focus0 = focus; focus = d;
+            //console.log(d)
+            var transition = d3.transition()
+                .duration(d3.event.altKey ? 7500 : 750)
+                .tween("zoom", function(d) {
+                  var i = d3.interpolateZoom(view, [focus.x, focus.y, focus.r * 2 + margin]);
+                  return function(t) { zoomTo(i(t)); };
+                });
+
+            transition.selectAll("text")
+              .filter(function(d) { return d.parent === focus || this.style.display === "inline"; })
+                .style("fill-opacity", function(d) { return d.parent === focus ? 1 : 0; })
+                .on("start", function(d) { if (d.parent === focus && d.r > 16) this.style.display = "inline"; })
+                .on("end", function(d) { if (d.parent !== focus || d.r < 16) this.style.display = "none"; });
+
+            d3.selectAll("circle")
+              .classed("in-focus", function (d) {
+                if(focus.children.includes(d)) {
+                  return true;
+                }
+                else {
+                  return false;
+                }
+              })
+          }
+
+          function zoomTo(v) {
+            var k = diameter / v[2]; view = v;
+            node.attr("transform", function(d) { return "translate(" + (d.x - v[0]) * k + "," + (d.y - v[1]) * k + ")"; });
+            circle.attr("r", function(d) { return d.r * k; });
+          }
+
+          //tooltip. abstract this if you wanna use it more
+          function showDetail(d) {
+            //console.log(d["data"]["name"] + ": " + d["r"])
+            var genre;
+            var genreCount;
+            if(d["children"]) {
+              genre = genreCounter[d["data"]["name"]];
+              genreCount = genre["count"];
+            }
+            else {
+              var parent = d["parent"]["data"]["name"];
+              genre = genreCounter[parent]["children"][d["data"]["name"]];
+              //console.log(genre)
+              genreCount = genre["count"];
+            }
+
+            function capitalizeFirstLetter(string) {
+                return string.charAt(0).toUpperCase() + string.slice(1);
+            }
+
+            var content = '<div class="text-center"><span class="big name">' + 
+                        capitalizeFirstLetter(d["data"]["name"]) + 
+                        '</span><hr width="70%" style="margin-top: 10px; margin-bottom: 10px;">' +
+                        '<span class="big">Artists with this genre: </span><span class="big value">' +
+                        genreCount +
+                        '</span>';
+            
+
+            tooltip.showTooltip(content, d3.event);
+          }
+
+          /*
+           * Hides tooltip
+           */
+          function hideDetail(d) {
+            // reset outline
+            //console.log("is this hiding?")
+            //d3.select(this)
+              //.attr('stroke', d3.rgb(color(d['popularity'])).darker());
+
+            tooltip.hideTooltip();
+          }
+      }
+
+      function graphAlbums() {
+        var tooltip = floatingTooltip('gates_tooltip', 240);
+        //var albumRankings = {};
+        for(song in topSongs) {
+          var songName = topSongs[song]['song_name'];
+          //console.log(songName)
+          if(!albumRankings[topSongs[song]['album']]) {
+            //console.log(songName)
+            albumRankings[topSongs[song]['album']] = {
+              'songs': {}
+            }
+            albumRankings[topSongs[song]['album']]['artist'] = topSongs[song]['artist'];
+            albumRankings[topSongs[song]['album']]['songs'][songName] = 101 - song;//maybe temporary, ranking = 101 - 'song rank'
+            albumRankings[topSongs[song]['album']]['cover_art'] = topSongs[song]['img_300'];
+          }
+          else {
+            //console.log(songName)
+            albumRankings[topSongs[song]['album']]['songs'][songName] = 101 - song;
+          }
+        }
+
+        //for picture ids
+        var albumId = 0;
+        for(album in albumRankings) {
+          var rank = 0;
+          for(song in albumRankings[album]['songs']) {
+            rank += albumRankings[album]['songs'][song];
+          }
+          albumRankings[album]['rank'] = rank;
+          albumRankings[album]['album_id'] = albumId;
+          albumId++;
+        }
+        //console.log(albumRankings)
+
+        //create treemap data
+        var treeJson = {
+          'name': 'albums',
+          'children': []
+        };
+
+        for(album in albumRankings) {
+          var albObj = {}
+          albObj['name'] = album;
+          albObj['size'] = albumRankings[album]['rank'];
+          treeJson['children'].push(albObj);
+        }
+
+        //console.log("album rankings");
+        //console.log(albumRankings)
+        //console.log(treeJson)
+
+        d3.select("#album-tab")
+          .append('svg')
+          .attr("id", "album-chart")
+          .attr("height", 570)
+          .attr("width", 960)
+
+        var svg = d3.select("#album-chart"),
+            width = 960,
+            height = 570;
+
+        var fader = function(color) { return d3.interpolateRgb(color, "#fff")(0.2); },
+            color = d3.scaleOrdinal(d3.schemeCategory20.map(fader)),
+            format = d3.format(",d");
+
+        var treemap = d3.treemap()
+            .tile(d3.treemapResquarify)
+            .size([width, height])
+            .round(true)
+            .paddingInner(1);
+
+        var root = d3.hierarchy(treeJson)
+            .eachBefore(function(d) { d.data.id = (d.parent ? d.parent.data.id + "." : "") + d.data.name; })
+            .sum(sumBySize)
+            .sort(function(a, b) { return b.height - a.height || b.value - a.value; });
+
+        treemap(root);
+
+        var cell = svg.selectAll("g")
+          .data(root.leaves())
+          .enter().append("g")
+            .attr("transform", function(d) { return "translate(" + d.x0 + "," + d.y0 + ")"; });
+
+        cell.append("defs")
+          .append("pattern")
+          .attr("id", function (d) {
+            return "bg-" + albumRankings[d["data"]["name"]]["album_id"];
+          })
+          .attr("width", '1')//function(d) { return d.x1 - d.x0; })
+          .attr("height", '1')  //function(d) { return d.y1 - d.y0; })
+          .append("image")
+          .attr("xlink:href", function(d) {
+            return albumRankings[d['data']['name']]['cover_art']['url'];
+          })
+          .attr("width", function(d) { 
+            if((d.x1 - d.x0) > (d.y1 - d.y0)) {
+              return d.x1 - d.x0
+            }
+            else {
+              return d.y1 - d.y0
+            }
+          })
+          .attr("height", function(d) { 
+            if((d.x1 - d.x0) > (d.y1 - d.y0)) {
+              return d.x1 - d.x0
+            }
+            else {
+              return d.y1 - d.y0
+            } 
+          })/*"180px");//*///function(d) { return d.y1 - d.y0; })
+          //.attr("width", "180px")
+          //.attr("height", "180px")
+
+        cell.append("rect")
+            .attr("id", function(d) { return d.data.id; })
+            .attr("width", function(d) { return d.x1 - d.x0; })
+            .attr("height", function(d) { return d.y1 - d.y0; })
+            .attr("fill", function (d) {
+              var id = "bg-" + albumRankings[d["data"]["name"]]["album_id"];
+              return "url(#" + id + ")";
+             })
+            .on('mouseover', showDetail)
+            .on('mouseout', hideDetail);
+            //.attr("fill", function(d) { return color(d.parent.data.id); });
+
+        cell.append("clipPath")
+            .attr("id", function(d) { return "clip-" + d.data.id; })
+          .append("use")
+            .attr("xlink:href", function(d) { return "#" + d.data.id; });
+
+        /*cell.append("text")
+            .attr("clip-path", function(d) { return "url(#clip-" + d.data.id + ")"; })
+          .selectAll("tspan")
+            .data(function(d) { return d.data.name.split(/(?=[A-Z][^A-Z])/g); })
+          .enter().append("tspan")
+            .attr("x", 4)
+            .attr("y", function(d, i) { return 13 + i * 10; })
+            .text(function(d) { return d; });*/
+        
+        /*cell.append("rect")
+          .attr("id", function(d) { return d.data.id; })
+          .attr("width", function(d) { return d.x1 - d.x0; })
+          .attr("height", function(d) { return d.y1 - d.y0; })
+          .attr("fill", "url(#bg)");*/
+
+        //the default mouseover, disable 
+        //cell.append("title")
+            //.text(function(d) { return d.data.id + "\n" + format(d.value); });
+
+        /*d3.selectAll("input")
+            .data([sumBySize, sumByCount], function(d) { return d ? d.name : this.value; })
+            .on("change", changed);
+
+        var timeout = d3.timeout(function() {
+          d3.select("input[value=\"sumByCount\"]")
+              .property("checked", true)
+              .dispatch("change");
+        }, 2000);
+
+        function changed(sum) {
+          timeout.stop();
+
+          treemap(root.sum(sum));
+
+          cell.transition()
+              .duration(750)
+              .attr("transform", function(d) { return "translate(" + d.x0 + "," + d.y0 + ")"; })
+            .select("rect")
+              .attr("width", function(d) { return d.x1 - d.x0; })
+              .attr("height", function(d) { return d.y1 - d.y0; });
+        }
+          
+        */
+
+        function showDetail(d) {
+          //console.log(albumRankings[d["data"]["name"]])
+          var album = albumRankings[d["data"]["name"]];
+          console.log(this)
+          d3.select(this).attr('stroke-width', '1.5')
+          d3.select(this).attr('stroke', 'black');
+          //get list of songs
+          var songString = "";
+          for(s in album["songs"]) {
+            songString += s + ", ";
+          }
+          songString = songString.slice(0, -2);
+          
+          var content = '<div class="text-center"><span class="big">' + d["data"]["name"] + 
+                      '</span><span class="small"> by </span><span class="big">' + 
+                      album["artist"] + 
+                      '</span><hr width="70%" style="margin-top: 10px; margin-bottom: 10px;">' +
+                      '<span class="big">Presence: </span><span class="big value">' +
+                      album["rank"] +
+                      '</span><br/>' +
+                      '<span class="big">Songs: </span><span class="big value">' +
+                      songString +
+                      '</span></div>';
+
+          tooltip.showTooltip(content, d3.event);
+          console.log("why")
+        }
+
+        /*
+         * Hides tooltip
+         */
+        function hideDetail(d) {
+          d3.select(this)
+            .attr('stroke', 'none')
+          tooltip.hideTooltip();
+        }
+
+        function sumByCount(d) {
+          return d.children ? 0 : 1;
+        }
+
+        function sumBySize(d) {
+          return d.size;
+        }
+
+      }
+
+      //quite a bit of bubble code
+      function graphSongs() {
+        /* bubbleChart creation function. Returns a function that will
+         * instantiate a new bubble chart given a DOM element to display
+         * it in and a dataset to visualize.
+         *
+         * Organization and style inspired by:
+         * https://bost.ocks.org/mike/chart/
+         *
+         */
+        function bubbleChart() {
+          // Constants for sizing
+          var width = 1100;
+          var height = 600;
+
+          // tooltip for mouseover functionality
+          var tooltip = floatingTooltip('gates_tooltip', 240);
+
+          // Locations to move bubbles towards, depending
+          // on which view mode is selected.
+          var center = { x: width / 2, y: height / 2 + 25 };
+          
+          var artistCenters = {};
+
+          var rankingCenters = {
+            '1-33': { x: width / 4, y: height / 2 },
+            '34-80': { x: width / 2, y: height / 2 },
+            '81-101': { x: 2 * width / 3, y: height / 2 }
+          };
+
+          var popCenters = {
+            'low': { x: width / 4, y: height / 2 },
+            'medium': { x: width / 2, y: height / 2 },
+            'high': { x: 2 * width / 3, y: height / 2 }
+          };
+
+          // X locations of the year titles.
+          var yearsTitleX = {
+            '1-33': 130,
+            '34-80': width / 2,
+            '81-101': width - 160
+          };
+
+          var artistTitlesX = {};
+
+          // @v4 strength to apply to the position forces
+          var forceStrength = .03;
+
+          // These will be set in create_nodes and create_vis
+          var svg = null;
+          var bubbles = null;
+          var nodes = [];
+
+          // Charge function that is called for each node.
+          // As part of the ManyBody force.
+          // This is what creates the repulsion between nodes.
+          //
+          // Charge is proportional to the diameter of the
+          // circle (which is stored in the radius attribute
+          // of the circle's associated data.
+          //
+          // This is done to allow for accurate collision
+          // detection with nodes of different sizes.
+          //
+          // Charge is negative because we want nodes to repel.
+          // @v4 Before the charge was a stand-alone attribute
+          //  of the force layout. Now we can use it as a separate force!
+          function charge(d) {
+            return -Math.pow(d.radius, 2.0) * forceStrength;
+          }
+
+          // Here we create a force layout and
+          // @v4 We create a force simulation now and
+          //  add forces to it.
+          var simulation = d3.forceSimulation()
+            .velocityDecay(0.14)//0.2)
+            .force('x', d3.forceX().strength(forceStrength).x(center.x))
+            .force('y', d3.forceY().strength(forceStrength).y(center.y))
+            .force('charge', d3.forceManyBody().strength(charge))
+            .on('tick', ticked);
+
+          // @v4 Force starts up automatically,
+          //  which we don't want as there aren't any nodes yet.
+          simulation.stop();
+
+          // Nice looking colors - no reason to buck the trend
+          // @v4 scales now have a flattened naming scheme
+          var color = d3.scaleLinear()
+            .domain([0, 20, 40, 60, 80, 100])
+            .range(['#edf8fb','#b3cde3','#8c96c6','#8856a7','#810f7c'])
+            .interpolate(d3.interpolateRgb)
+
+          //console.log("color");
+          //console.log(color);
+
+          /*
+           * This data manipulation function takes the raw data from
+           * the CSV file and converts it into an array of node objects.
+           * Each node will store data and visualization values to visualize
+           * a bubble.
+           *
+           * rawData is expected to be an array of data objects, read in from
+           * one of d3's loading functions like d3.csv.
+           *
+           * This function returns the new node array, with a node in that
+           * array for each element in the rawData input.
+           */
+          function createNodes(rawData) {
+            // Use the max total_amount in the data as the max in the scale's domain
+            // note we have to ensure the total_amount is a number.
+            var maxAmount = d3.max(rawData, function (d) { return +d.total_amount; });
+
+            // Sizes bubbles based on area.
+            // @v4: new flattened scale names.
+            var radiusScale = d3.scalePow()
+              .exponent(0.5)
+              .range([2, 85])
+              .domain([0, maxAmount]);
+
+            //changed from map to a for loop
+            var myNodes = [];
+            for(r in rawData) {
+              var d = rawData[r];
+              var rad;
+              if(d['ranking'] > 80) {
+                rad = Math.sqrt(101 - d['ranking'])
+              }
+              else if (d['ranking'] > 4) {
+                rad = Math.pow(1.46, Math.sqrt(101 - d['ranking']))
+              }
+              else {
+                rad = Math.pow(1.53, Math.sqrt(101 - d['ranking']));
+              }
+              var nodeObj = {
+                id: d['id'],
+                radius: rad,//Math.pow(1.5, Math.sqrt(101 - d['ranking'])), //TEMPORARY
+                name: d['song_name'],
+                artist: d['artist'],
+                album: d['album'],
+                art: d['img_300']['url'],
+                rank: d['ranking'],
+                preview: d['preview'],
+                x: Math.random() * 900,
+                y: 90 * d['popularity'],
+                value: 1000,
+                popularity: d['popularity'],
+                year: 1995
+              }
+              //console.log(d['img_300']['url'])
+              myNodes.push(nodeObj);
+            }
+            
+            //create artist titles
+            var i = 0;
+            for(a in artistsRankingArray) {
+              if(i < 5) {
+                artistTitlesX[artistsRankingArray[i][0]] = ((i + 1) * width) / 6;
+                artistCenters[artistsRankingArray[i][0]] = {x: ((i + 1) * width) / 6, y: height / 2}
+              }
+              else {
+                break;
+              }
+              i++;
+            }
+            //console.log(artistTitlesX)
+            //console.log(artistCenters)
+            //console.log(myNodes);
+
+            // sort them to prevent occlusion of smaller nodes.
+            myNodes.sort(function (a, b) { return b.value - a.value; });
+
+            return myNodes;
+          }
+
+          /*
+           * Main entry point to the bubble chart. This function is returned
+           * by the parent closure. It prepares the rawData for visualization
+           * and adds an svg element to the provided selector and starts the
+           * visualization creation process.
+           *
+           * selector is expected to be a DOM element or CSS selector that
+           * points to the parent element of the bubble chart. Inside this
+           * element, the code will add the SVG continer for the visualization.
+           *
+           * rawData is expected to be an array of data objects as provided by
+           * a d3 loading function like d3.csv.
+           */
+          var chart = function chart(selector, rawData) {
+            //console.log(rawData)
+            // convert raw data into nodes data
+            nodes = createNodes(rawData);
+
+            // Create a SVG element inside the provided selector
+            // with desired size.
+            svg = d3.select(selector)
+              .append('svg')
+              .attr('width', width)
+              .attr('height', height);
+
+            // Bind nodes data to what will become DOM elements to represent them.
+            bubbles = svg.selectAll('.bubble')
+              .data(nodes, function (d) { return d.id; });
+
+            //add images to the bubbles
+            //might have to do var bubblesI...
+            var bubblesI = bubbles.enter().append('defs')
+              .append('pattern')
+              .attr('id', function (d) {
+                return 'sbg-' + d['rank']; 
+              })
+              .attr('width', 1)
+              .attr('height', 1)
+              .append('image')
+              .attr('xlink:href', function (d) {
+                return d['art'];
+              }) 
+              .attr("height", function (d) {
+                return d['radius'] * 2;
+              })
+              .attr("width", function (d) {
+                return d['radius'] * 2;
+              })
+              //console.log("BUBBLES")
+              //console.log(bubbles)
+              /*.attr("xlink:href", function(d) {
+                return d['art'];
+              })
+              .attr("width", function(d) { 
+                return  d['radius']
+              })
+              .attr("height", function(d) { 
+                return d['radius']
+              })*/
+
+            // Create new circle elements each with class `bubble`.
+            // There will be one circle.bubble for each object in the nodes array.
+            // Initially, their radius (r attribute) will be 0.
+            // @v4 Selections are immutable, so lets capture the
+            //  enter selection to apply our transtition to below.
+            var bubblesE = bubbles.enter().append('circle')
+              .classed('bubble', true)
+              .attr('id', function (d) { return 's' + d['id'] })
+              .attr('r', 0)
+              .attr('fill', function (d) { return color(d['popularity']); })
+              /*.attr('fill', function (d) {
+                var id = 'sbg-' + d['rank'];
+                return "url(#" + id + ")";
+              })*/
+              .attr('stroke', function (d) { return d3.rgb(color(d['popularity'])).darker(); })
+              .attr('stroke-width', 2)
+              .on('click', function(d) {
+                if(sound.src != d['preview']) {
+                  if(!sound.paused) 
+                    sound.pause();
+                  sound.currentTime = 0;
+                  sound = new Audio(d['preview']);
+                  sound.play();
+                  /*for(i = 0; i <= 6; i ++) {
+                    if(i % 2 == 0) {
+                      d3.select(this).transition()
+                        .duration(500)
+                        .attr('r', function (d) { return d['radius'] += 10 })
+                    }
+                    else {
+                      d3.select(this).transition()
+                        .duration(3000)
+                        .attr('r', function (d) { return d['radius'] -= 10 })
+                    }
+                    setTimeout
+                  }*/
+                  /*d3.select(this).transition()
+                    .duration(750)
+                    //.delay(function(d) { return d * 40; })
+                    .on("start", function repeat() {
+                        d3.active(this)
+                            .attr("r", function(d) { return d['radius'] += 2 }) 
+                          .transition()
+                            .attr("r", function(d) { return d['radius'] -= 2 })
+                          .transition()
+                            .on("start", repeat);
+                          })*/
+                  /*d3.select("#sbg-" + d['rank']).transition()
+                    //.style('opacity', 0)
+                    .duration(750)
+                    //.delay(function(d) { return d * 40; })
+                    .on("start", function repeat() {
+                        d3.active(this)
+                            .attr("height", function(d) { return d['radius'] * 2.}) 
+                            .attr("width", function(d) { return d['radius'] * 2.2 })
+                          .transition()
+                            .attr("height", function(d) { return d['radius'] * 2 })
+                          .transition()
+                            .on("start", repeat);
+                          })*/
+                }
+                else {
+                  if(sound.paused) {
+                    sound.play();
+                  }
+                  else {
+                    sound.pause();
+                  }
+                }
+              })
+              .on('mouseover', showDetail)
+              .on('mouseout', hideDetail);
+
+            // @v4 Merge the original empty selection and the enter selection
+            bubblesE = bubblesE.merge(bubblesI);
+            bubbles = bubbles.merge(bubblesE);
+
+
+            // Fancy transition to make bubbles appear, ending with the
+            // correct radius
+            bubbles.transition()
+              .duration(2000)
+              .attr('r', function (d) { return d['radius'] }); 
+
+            // Set the simulation's nodes to our newly created nodes array.
+            // @v4 Once we set the nodes, the simulation will start running automatically!
+            simulation.nodes(nodes);
+
+            // Set initial layout to single group.
+            groupBubbles();
+
+            var colors = ['#edf8fb','#b3cde3','#8c96c6','#8856a7','#810f7c'];
+
+            var legend = svg.selectAll(".legend")
+                .data(colors, function(d) { return d; });
+
+            console.log("legend")
+            console.log(legend.data)
+
+            legend.enter()
+              .append("g")
+                .attr("class", function(d) {
+                  console.log("caught one");
+                  return "legend" 
+                })
+              .append("rect")
+                .attr("x", function (d, i) { return 40 * i; })
+                .attr("y", 30)
+                .attr('id', function (d, i) { return 'legend-' + i })
+                .attr("width", 40)
+                .attr("height", 20)
+                .style("fill", function (d, i) { console.log(colors[i]); return colors[i]; })
+              
+            svg.selectAll('.legend').append('text')
+              .attr('class', 'mono')
+              .attr('x', function (d, i) { return 5 + 50 * i })
+              .attr('y', 65)
+              .attr('text-anchor', 'middle')
+              .text(function (d, i) { 
+                if(i == 0) {
+                  return "0";
+                }
+                else if(i == 4) {
+                  return "100";
+                }
+              });
+
+
+            legend.exit().remove();
+            //groupBubbles();
+          };
+
+          /*
+           * Callback function that is called after every tick of the
+           * force simulation.
+           * Here we do the acutal repositioning of the SVG circles
+           * based on the current x and y values of their bound node data.
+           * These x and y values are modified by the force simulation.
+           */
+          function ticked() {
+            bubbles
+              .attr('cx', function (d) { return d.x; })
+              .attr('cy', function (d) { return d.y; });
+          }
+
+
+          function toggleAlbumArt() {
+            var currentFill = d3.select(".bubble").attr("fill");
+            if(currentFill.includes('rgb')) {
+              d3.selectAll('.bubble')
+                .attr('fill', function (d) {
+                  var id = 'sbg-' + d['rank'];
+                  return "url(#" + id + ")";
+                })
+            }
+            else {
+              d3.selectAll('.bubble')
+                .attr('fill', function (d) { return color(d['popularity']); })
+            }
+          }
+
+          /*
+           * Sets visualization in "single group mode".
+           * The year labels are hidden and the force layout
+           * tick function is set to move all nodes to the
+           * center of the visualization.
+           */
+          function groupBubbles() {
+            hideYearTitles();
+
+            // @v4 Reset the 'x' force to draw the bubbles to the center.
+            simulation.force('x', d3.forceX().strength(forceStrength).x(center.x));
+
+            // @v4 We can reset the alpha value and restart the simulation
+            simulation.alpha(1).restart();
+          }
+
+
+          /*
+           * Sets visualization in "split by year mode".
+           * The year labels are shown and the force layout
+           * tick function is set to move nodes to the
+           * yearCenter of their data's year.
+           */
+          function splitBubbles(splitBy) {
+            //console.log(splitBy)
+            hideYearTitles();
+            if(splitBy == 'rank') { 
+              simulation.force('x', d3.forceX().strength(forceStrength).x(nodeRankPosX)); 
+            }
+            else if(splitBy == 'pop') {
+              simulation.force('x', d3.forceX().strength(0.05).x(nodePopPos));
+              //showYearTitles();
+            }
+            else if(splitBy == 'artist') {
+              //console.log(nodeArtistPos)
+              simulation.force('x', d3.forceX().strength(forceStrength).x(nodeArtistPos));
+              showArtistTitles();
+            }
+
+  
+
+            // @v4 We can reset the alpha value and restart the simulation
+            simulation.alpha(1).restart();
+          }
+
+          function nodeArtistPos(d) {
+            if(artistCenters[d['artist']]) {
+              return artistCenters[d['artist']].x - 30;
+            }
+            else {
+              return -200;
+            }
+          }
+
+          function nodeRankPosX(d) {
+            //console.log("noderankpos")
+            return 250 + (5 * d['rank']);
+          }
+
+          function nodePopPos(d) {
+            return 250 + (5 * d['popularity']);
+          }
+
+          function showArtistTitles() {
+            var yearsData = d3.keys(artistTitlesX);
+            var years = svg.selectAll('.year')
+              .data(yearsData);
+
+            years.enter().append('text')
+              .attr('class', 'year')
+              .attr('x', function (d) { return artistTitlesX[d]; })
+              .attr('y', 80)
+              .attr('text-anchor', 'middle')
+              .text(function (d) { return d; });
+          }
+          /*
+           * Hides Year title displays.
+           */
+          function hideYearTitles() {
+            svg.selectAll('.year').remove();
+          }
+
+          /*
+           * Shows Year title displays.
+           */
+          function showYearTitles() {
+            // Another way to do this would be to create
+            // the year texts once and then just hide them.
+            var yearsData = d3.keys(yearsTitleX);
+            var years = svg.selectAll('.year')
+              .data(yearsData);
+
+            years.enter().append('text')
+              .attr('class', 'year')
+              .attr('x', function (d) { return yearsTitleX[d]; })
+              .attr('y', 40)
+              .attr('text-anchor', 'middle')
+              .text(function (d) { return d; });
+          }
+
+          //tooltip. abstract this if you wanna use it more
+          function showDetail(d) {
+            //console.log(d)
+            // change outline to indicate hover state.
+            d3.select(this).attr('stroke', 'black');
+
+            var content = '<div class="text-center"><span class="big">' + d.name + 
+            '</span><span class="small"> by </span><span class="big">' + 
+            d.artist + 
+            '</span><hr width="70%" style="margin-top: 10px; margin-bottom: 10px;">' +
+            '<span class="big">Rank: </span><span class="big value">' +
+            (parseInt(d.rank) + 1) +
+            '</span><br/>' +
+            '<span class="big">Popularity: </span><span class="big value">' +
+            d.popularity +
+            '</span></div>';
+
+            //var content = '<span class="big">Fuck</span> '
+            /*var content = '<span class="name">Artist: </span><span class="value">' +
+                        d.artist +
+                        '</span><br/>' +
+                        '<span class="name">Song: </span><span class="value">' +
+                        d.name +
+                        '</span><br/>' +
+                        '<span class="name">Rank: </span><span class="value">' +
+                        (parseInt(d.rank) + 1) +
+                        '</span><br/>' +
+                        '<span class="name">Popularity: </span><span class="value">' +
+                        d.popularity +
+                        '</span>';*/
+          
+            
+
+            tooltip.showTooltip(content, d3.event);
+          }
+
+          /*
+           * Hides tooltip
+           */
+          function hideDetail(d) {
+            // reset outline
+            d3.select(this)
+              .attr('stroke', d3.rgb(color(d['popularity'])).darker());
+
+            tooltip.hideTooltip();
+          }
+          
+
+          /*
+           * Externally accessible function (this is attached to the
+           * returned chart function). Allows the visualization to toggle
+           * between "single group" and "split by year" modes.
+           *
+           * displayName is expected to be a string and either 'year' or 'all'.
+           */
+          chart.toggleDisplay = function (displayName) {
+            //console.log(displayName);
+            if (displayName === 'rank-button') {
+              splitBubbles('rank');
+            } 
+            else if(displayName == 'pop-button') {
+              splitBubbles('pop');
+            }
+            else if(displayName == 'artist-split-button') {
+              splitBubbles('artist');
+            }
+            else if(displayName == 'album-art-button') {
+              toggleAlbumArt();
+            }
+            else {
+              groupBubbles();
+            }
+          };
+
+
+          // return the chart function from closure.
+          return chart;
+        }
+
+        /*
+         * Below is the initialization code as well as some helper functions
+         * to create a new bubble chart instance, load the data, and display it.
+         */
+
+        var myBubbleChart = bubbleChart();
+
+        /*
+         * Function called once data is loaded from CSV.
+         * Calls bubble chart function to display inside #vis div.
+         */
+        function display(data) {
+          myBubbleChart('#song-tab', data);
+        }
+
+        /*
+         * Sets up the layout buttons to allow for toggling between view modes.
+         */
+        function setupButtons() {
+          d3.select('#song-toolbar')
+            .selectAll('.button')
+            .on('click', function () {
+              //console.log("CLICKED")
+              // Remove active class from all buttons
+              d3.selectAll('.button').classed('active', false);
+              // Find the button just clicked
+              var button = d3.select(this);
+
+              // Set it as the active button
+              button.classed('active', true);
+
+              // Get the id of the button
+              var buttonId = button.attr('id');
+
+              // Toggle the bubble chart based on
+              // the currently clicked button.
+              myBubbleChart.toggleDisplay(buttonId);
+            });
+        }
+
+        /*
+         * Helper function to convert a number into a string
+         * and add commas to it to improve presentation.
+         */
+        function addCommas(nStr) {
+          nStr += '';
+          var x = nStr.split('.');
+          var x1 = x[0];
+          var x2 = x.length > 1 ? '.' + x[1] : '';
+          var rgx = /(\d+)(\d{3})/;
+          while (rgx.test(x1)) {
+            x1 = x1.replace(rgx, '$1' + ',' + '$2');
+          }
+
+          return x1 + x2;
+        }
+
+        // Load the data.
+        //d3.csv('data/gates_money.csv', display);
+        display(topSongs);
+        // setup the buttons.
+        setupButtons();
+      }
+
+      /*
+       * Creates tooltip with provided id that
+       * floats on top of visualization.
+       * Most styling is expected to come from CSS
+       * so check out bubble_chart.css for more details.
+       */
+       //edit this to take in a data "type" (genre, artist, album), and display different data accordingly
+      function floatingTooltip(tooltipId, width) {
+        console.log("is dis where it happens?")
+        //console.log("floating tool")
+        // Local variable to hold tooltip div for
+        // manipulation in other functions.
+        var tt = d3.select('body')
+          .append('div')
+          .attr('class', 'tooltip text-center')
+          .attr('id', tooltipId)
+          .style('pointer-events', 'none');
+
+        // Set a width if it is provided.
+        if (width) {
+          tt.style('width', width);
+        }
+
+        // Initially it is hidden.
+        hideTooltip();
+
+        /*
+         * Display tooltip with provided content.
+         *
+         * content is expected to be HTML string.
+         *
+         * event is d3.event for positioning.
+         */
+        function showTooltip(content, event) {
+          tt.style('opacity', 1.0)
+            .html(content);
+
+          updatePosition(event);
+        }
+
+        /*
+         * Hide the tooltip div.
+         */
+        function hideTooltip() {
+          tt.style('opacity', 0.0);
+        }
+
+        /*
+         * Figure out where to place the tooltip
+         * based on d3 mouse event.
+         */
+        function updatePosition(event) {
+          var xOffset = 20;
+          var yOffset = 10;
+
+          var ttw = tt.style('width');
+          var tth = tt.style('height');
+
+          var wscrY = window.scrollY;
+          var wscrX = window.scrollX;
+
+          var curX = (document.all) ? event.clientX + wscrX : event.pageX;
+          var curY = (document.all) ? event.clientY + wscrY : event.pageY;
+          var ttleft = ((curX - wscrX + xOffset * 2 + ttw) > window.innerWidth) ?
+                       curX - ttw - xOffset * 2 : curX + xOffset;
+
+          if (ttleft < wscrX + xOffset) {
+            ttleft = wscrX + xOffset;
+          }
+
+          var tttop = ((curY - wscrY + yOffset * 2 + tth) > window.innerHeight) ?
+                      curY - tth - yOffset * 2 : curY + yOffset;
+
+          if (tttop < wscrY + yOffset) {
+            tttop = curY + yOffset;
+          }
+
+          tt
+            .style('top', tttop + 'px')
+            .style('left', ttleft + 'px');
+        }
+
+        return {
+          showTooltip: showTooltip,
+          hideTooltip: hideTooltip,
+          updatePosition: updatePosition
+        };
+      }
+
+      function makeTabs() {
+        makeTab("genre-tab", "Genre");
+        makeTab("album-tab", "Album");
+        makeTab("song-tab", "Song");
+        graphGenres();
+        graphAlbums();
+        graphSongs();
+        $(function() {
+          $("#tabs").tabs();
+        });
+
+      }
+      function makeTab(id, text) {
+        var li = document.createElement('li');
+        var a = document.createElement('a');
+        a.href = "#" + id;
+        a.append(document.createTextNode(text));
+        li.append(a);
+        document.getElementById('tab-list').append(li);
+        var tabDiv = document.createElement('div');
+        tabDiv.id = id;
+        document.getElementById('tabs').appendChild(tabDiv);
+        //create toolbar for songs
+        if(id == 'song-tab') {
+          var toolDiv = document.createElement('div');
+          toolDiv.id = "song-toolbar";
+          var rankButton = document.createElement('a');
+          rankButton.href ='#';
+          rankButton.id = 'rank-button';
+          rankButton.className = 'button active';
+          rankButton.appendChild(document.createTextNode('Sort by rank'));
+          var popButton = document.createElement('a');
+          popButton.href ='#';
+          popButton.id = 'pop-button';
+          popButton.className = 'button active';
+          popButton.appendChild(document.createTextNode('Sort by popularity'));
+          var groupButton = document.createElement('a');
+          groupButton.href ='#';
+          groupButton.id = 'group-button';
+          groupButton.className = 'button active';
+          groupButton.appendChild(document.createTextNode('Group bubbles'));
+          var artistButton = document.createElement('a');
+          artistButton.href = '#';
+          artistButton.id = 'artist-split-button'
+          artistButton.className = 'button active';
+          artistButton.appendChild(document.createTextNode('Show top artists'));
+          var albumArtButton = document.createElement('a');
+          albumArtButton.href = '#';
+          albumArtButton.id = 'album-art-button'
+          albumArtButton.className = 'button';
+          albumArtButton.appendChild(document.createTextNode('Show/hide album art'));
+          toolDiv.appendChild(groupButton);
+          toolDiv.appendChild(rankButton);
+          toolDiv.appendChild(popButton);
+          toolDiv.appendChild(artistButton);
+          toolDiv.appendChild(albumArtButton);
+          tabDiv.append(toolDiv);
+        }
+      }
+
+      /**
+       * Obtains parameters from the hash of the URL
+       * @return Object
+       */
+      function getHashParams() {
+        var hashParams = {};
+        var e, r = /([^&;=]+)=?([^&;]*)/g,
+            q = window.location.hash.substring(1);
+        while ( e = r.exec(q)) {
+           hashParams[e[1]] = decodeURIComponent(e[2]);
+        }
+        //console.log("hash params")
+        //console.log(hashParams)
+        return hashParams;
+      }
+
+      var params = getHashParams();
+      if(!params['access_token']) {
+        console.log("noice")
+        d3.json('https://aljondo.github.io/spotify100/ryans100.js', function(error, root) {
+          console.log("ME")
+          console.log(root)
+          ryansSongs = root;
+          preLoadData();
+        })
+      }
+      else {
+        var access_token = params.access_token;
+        getUserData(0, access_token);
+        /*(function() {
+          var stateKey = 'spotify_auth_state';
+
+          function generateRandomString(length) {
+            var text = '';
+            var possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+
+            for (var i = 0; i < length; i++) {
+              text += possible.charAt(Math.floor(Math.random() * possible.length));
+            }
+            return text;
+          };
+
+          var userProfileSource = document.getElementById('user-profile-template').innerHTML,
+              userProfileTemplate = Handlebars.compile(userProfileSource),
+              userProfilePlaceholder = document.getElementById('user-profile');
+
+              oauthSource = document.getElementById('oauth-template').innerHTML,
+              oauthTemplate = Handlebars.compile(oauthSource),
+              oauthPlaceholder = document.getElementById('oauth');
+
+          var params = getHashParams();
+
+          var access_token = params.access_token,
+              state = params.state,
+              storedState = localStorage.getItem(stateKey);
+
+          if (access_token && (state == null || state !== storedState)) {
+            alert('There was an error during the authentication');
+          } else {
+            localStorage.removeItem(stateKey);
+            if (access_token) {
+              $.ajax({
+                  url: 'https://api.spotify.com/v1/me',
+                  headers: {
+                    'Authorization': 'Bearer ' + access_token
+                  },
+                  success: function(response) {
+                    userProfilePlaceholder.innerHTML = userProfileTemplate(response);
+
+                    $('#login').hide();
+                    $('#loggedin').show();
+                  }
+              });
+            } else {
+                $('#login').show();
+                $('#loggedin').hide();
+            }
+
+            /*document.getElementById('login-button').addEventListener('click', function() {
+
+              var client_id = '91447869cdba4a8abf2a141784665052'; // Your client id
+              var redirect_uri = 'http://localhost:8888/callback'; // Your redirect uri
+
+              var state = generateRandomString(16);
+
+              localStorage.setItem(stateKey, state);
+              var scope = 'playlist-read-private user-read-private user-read-email';
+
+              var url = 'https://accounts.spotify.com/authorize';
+              url += '?response_type=token';
+              url += '&client_id=' + encodeURIComponent(client_id);
+              url += '&scope=' + encodeURIComponent(scope);
+              url += '&redirect_uri=' + encodeURIComponent(redirect_uri);
+              url += '&state=' + encodeURIComponent(state);
+
+              window.location = url;
+            }, false);
+          }
+        })();*/
+      }
+
+      
+
+    </script>
+  </body>
+</html>
+

@@ -15,22 +15,36 @@
       	window.onload = load;
     </script>
 	</head>
-	<body>
-		<div class="colored-font" id="home">
-			<div id="nav" class="container nav-bar">
-	   			  <ul>
-	        	    <li class="nav-current-page">Home</li>
-	        	    <li><a class="nav-text" href="projects.html">Projects</a></li>
-	        	    <li><a class="nav-text" href="skills.html">Skills</a></li>
-	        	    <li><a class="nav-text" href="interests.html">Interests</a></li>
-	        	    <li><a class="nav-text" href="contact.html">Contact</a><li>
-	    		  </ul>
-	  		</div>
-			<div id="big-name" class="text-center fade-in one">
+	<body id="home-body">
+		<div class="colored-font fade-in" id="home">
+			<!--<div id="big-name" class="text-center fade-in one">
+				<p>Ryan Aljondi</p>
+			</div>-->
+			<div class="text-center" id="big-name">
 				<p>Ryan Aljondi</p>
 			</div>
-			<img class="center-block fade-in one" id="thing" src="pictures/thing.png">
+			<div class="container">	
+				<div class="row">
+					<div class="container text-center fade-in-one">
+						<div class="col-sm-4 medium-text" id="programming-window">
+							<a class="nav-text" href='projects.html'><p>Programming</p></a>
+						</div>
+						<div class="col-sm-4 medium-text" id="music-window">
+							<a class="nav-text" href='music.html'><p>Music</p></a>
+						</div>
+						<div class="col-sm-4 medium-text" id="contact-window">
+							<a class="nav-text" href='contact.html'><p>Contact</p></a>
+						</div>
+					</div>
+				</div>
+				<div id="bar-row" class="row">
+					<div class="col-sm-4 bar" id="proj-bar"></div>
+					<div class="col-sm-4 bar" id="music-bar"></div>
+					<div class="col-sm-4 bar" id="contact-bar"></div>
+				</div>
+			</div>
 		</div>
+
 	</body>
 </html>
 

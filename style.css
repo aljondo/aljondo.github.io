@@ -10,6 +10,10 @@ body {
   background-color: #1d2120;
 }
 
+#top100div {
+  background-color: #fff;
+}
+
 .nav-bar {
   border-bottom-style: solid;
   margin-bottom: 4vh;
@@ -50,15 +54,37 @@ ul {
 	letter-spacing: 2px;
 }
 
-/*home page*/
 #home {
-	padding: 2vh;
+  padding-top: 20vh;
+}
+
+#bar-row {
+  height: 3vh;
+}
+
+.bar {
+  height: 3vh;
+}
+#proj-bar {
+  background-color: #69140E; /*#DB3069;*/
+}
+
+#music-bar {
+  background-image: url("pictures/summersongs.jpg");
+}
+
+#contact-bar {
+  background-color: #A44200;
 }
 
 #big-name {
-	font-size: 15vh;
+	font-size: 10vh;
 	letter-spacing: 2px;
 	padding: 7vh;
+}
+
+.medium-text {
+  font-size: 5vh;
 }
 
 #thing {

@@ -171,13 +171,13 @@
       <div id="tabs">
         <ul id="tab-list"></ul>
       </div>
-      <div id="loggedin">
+      <!--<div id="loggedin">
         <div id="user-profile">
         </div>
         <div id="oauth">
         </div>
         <button class="btn btn-default" id="obtain-new-token">Obtain new token using the refresh token</button>
-      </div>
+      </div>-->
       <svg id="genre-chart" width="960" height="960"></svg>
       <svg style= "overflow:auto" id="album-chart" width="960" height="570"></svg>
     </div>
@@ -202,13 +202,13 @@
       </div>
     </script>
 
-    <script id="oauth-template" type="text/x-handlebars-template">
+    <!--<script id="oauth-template" type="text/x-handlebars-template">
       <h2>oAuth info</h2>
       <dl class="dl-horizontal">
         <dt>Access token</dt><dd class="text-overflow">{{access_token}}</dd>
         <dt>Refresh token</dt><dd class="text-overflow">{{refresh_token}}></dd>
       </dl>
-    </script>
+    </script>-->
 
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/2.0.0-alpha.1/handlebars.min.js"></script>
@@ -216,6 +216,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/4.5.0/d3.min.js"></script>
     <script src = "https://code.jquery.com/jquery-1.10.2.js"></script>
     <script src = "https://code.jquery.com/ui/1.10.4/jquery-ui.js"></script>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/spin.js/2.0.1/spin.min.js'></script> 
     <link rel="stylesheet" type="text/css" href="../style.css">
     <script>
       var ryansSongs;
@@ -257,6 +258,8 @@
           "children": {}
         };
       }
+
+      var spinner; //global spinner variable
       //console.log(genreCounter)
       //temp, from example. populate html elements w profile info
       var userProfileSource = document.getElementById('user-profile-template').innerHTML,
@@ -1737,7 +1740,21 @@
         })
       }
       else {
+        var opts = {
+          lines: 9, // The number of lines to draw
+          length: 9, // The length of each line
+          width: 5, // The line thickness
+          radius: 14, // The radius of the inner circle
+          color: '#EE3124', // #rgb or #rrggbb or array of colors
+          speed: 1.9, // Rounds per second
+          trail: 40, // Afterglow percentage
+          className: 'spinner', // The CSS class to assign to the spinner
+        };
+        var target = document.getElementById('tabs');
         var access_token = params.access_token;
+        var spinner = new Spinner(opts).spin(target)
+        console.log("spinner")
+        console.log(spinner)
         getUserData(0, access_token);
         /*(function() {
           var stateKey = 'spotify_auth_state';

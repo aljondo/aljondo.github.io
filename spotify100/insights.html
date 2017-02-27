@@ -1719,7 +1719,7 @@
               var buttonId = button.attr('id');
               if(buttonId == "album-art-button") {
                 if ($('#album-art-button').css('background-image') == 'none') {
-                  var theArt = topSongs[3]['img_300']['url'];
+                  var theArt = topSongs[Math.floor(Math.random() * 100) + 0 ]['img_300']['url'];
                   console.log(theArt)
                   var button = document.getElementById("album-art-button");
                   var str = "url('" + theArt + "')";

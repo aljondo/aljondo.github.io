@@ -323,6 +323,13 @@
       <div id="tabs">
         <ul id="tab-list"></ul>
       </div>
+      <div id="help-text" style="display:none">
+        <h3 style="font-family: 'Helvetica'">Not showing up? Try one of these fixes:</h3>
+        <ul style="list-style-type:disc;">
+          <li style="font-family: 'Helvetica'"><h4>Follow your Top Tracks of 2016 playlist at  <a href="https://open.spotify.com/view/2016-page" target="_blank">2016 Wrapped</a> (click "View on Spotify" and follow the playlist that shows up)</h4></li>
+          <li style="font-family: 'Helvetica'"><h4> Make sure the playlist is public once you follow it, or else the app won't find it</h4></li>
+        </ul>
+      </div>
       <!--<div id="loggedin">
         <div id="user-profile">
         </div>
@@ -450,7 +457,7 @@
                       success: function(response) {
                         //userProfilePlaceholder.innerHTML = userProfileTemplate(response);
                         userJson = response;
-                        console.log(userJson);
+                        //console.log(userJson);
                         $('#login').hide();
                         $('#loggedin').show();
                         getUserData(1, access_token);
@@ -463,15 +470,18 @@
                         'Authorization': 'Bearer ' + access_token
                       },
                       success: function(response) {
-                        console.log(response);
+                        //console.log(response);
                         for(i in response.items) {
                           if(response.items[i].name == "Your Top Songs 2016") {
                             topSongsId = response.items[i].id;
-                            console.log(topSongsId);
+                            if(topSongsId == null) {
+                              $("#help-text").show();
+                            }
+                            //console.log(topSongsId);
                             break;
                           }
                         }
-                        console.log(topSongsId)
+                        //console.log(topSongsId)
                         getUserData(2, access_token);
                       }
                   });
@@ -482,8 +492,8 @@
                         'Authorization': 'Bearer ' + access_token
                       },
                       success: function(response) {
-                        console.log("playlist")
-                        console.log(response);
+                        //console.log("playlist")
+                        //console.log(response);
                         //populate top songs json
                         var albumIds = [];
                         for(i in response.tracks.items) {
@@ -506,7 +516,7 @@
 
                         }
                         //getReleaseDate(0, albumIds, access_token)
-                        console.log(albumIds[32])
+                        //console.log(albumIds[32])
                         //call literally all the graphing functions
                         //makeTabs();
                         getGenres(0, access_token);
@@ -519,7 +529,7 @@
       //recursiveish attempt to work with asynchronous calls. might wanna fix this later
       //goes through each song in topSongs and gets their release date
       function getReleaseDate(albumNum, albumIds, access_token) { 
-        console.log("getting release date??")
+        //console.log("getting release date??")
         $.ajax({
           url: 'https://api.spotify.com/v1/albums/' + albumIds[albumNum],
           headers: {
@@ -532,8 +542,8 @@
             }
             else {
               //console.log(response);
-              console.log("top songs")
-              console.log(topSongs)
+              //console.log("top songs")
+              //console.log(topSongs)
             }
           }
         });
@@ -577,7 +587,7 @@
                   }
                   genreString += topSongs[i]["apiGenres"][g] + ", ";
                 }
-                console.log(genreString);
+                //console.log(genreString);
               }
               //console.log(dance)
               //graphGenres();
@@ -798,7 +808,7 @@
           zoomTo([root.x, root.y, root.r * 2 + margin]);
 
           function zoom(d) {
-            console.log(d)
+            //console.log(d)
             var focus0 = focus; focus = d;
             //console.log(d)
             var transition = d3.transition()
@@ -1052,7 +1062,7 @@
         function showDetail(d) {
           //console.log(albumRankings[d["data"]["name"]])
           var album = albumRankings[d["data"]["name"]];
-          console.log(this)
+          //console.log(this)
           d3.select(this).attr('stroke-width', '1.5')
           d3.select(this).attr('stroke', 'black');
           //get list of songs
@@ -1425,8 +1435,8 @@
             var legend = svg.selectAll(".legend")
                 .data(colors, function(d) { return d; });
 
-            console.log("legend")
-            console.log(legend.data)
+            //console.log("legend")
+            //console.log(legend.data)
 
             svg.append("text")
               .text("Popularity")
@@ -1438,7 +1448,7 @@
             legend.enter()
               .append("g")
                 .attr("class", function(d) {
-                  console.log("caught one");
+                  //console.log("caught one");
                   return "legend" 
                 })
               .append("rect")
@@ -1447,7 +1457,7 @@
                 .attr('id', function (d, i) { return 'legend-' + i })
                 .attr("width", 40)
                 .attr("height", 20)
-                .style("fill", function (d, i) { console.log(colors[i]); return colors[i]; })
+                .style("fill", function (d, i) { return colors[i]; })
               
             svg.selectAll('.legend').append('text')
               .attr('class', 'mono')
@@ -1721,7 +1731,7 @@
               if(buttonId == "album-art-button") {
                 if ($('#album-art-button').css('background-image') == 'none') {
                   var theArt = topSongs[Math.floor(Math.random() * 100) + 0 ]['img_300']['url'];
-                  console.log(theArt)
+                  //console.log(theArt)
                   var button = document.getElementById("album-art-button");
                   var str = "url('" + theArt + "')";
                   button.style.backgroundImage = str;
@@ -1769,7 +1779,7 @@
        */
        //edit this to take in a data "type" (genre, artist, album), and display different data accordingly
       function floatingTooltip(tooltipId, width) {
-        console.log("is dis where it happens?")
+        //console.log("is dis where it happens?")
         //console.log("floating tool")
         // Local variable to hold tooltip div for
         // manipulation in other functions.
@@ -1941,18 +1951,18 @@
 
       var params = getHashParams();
       if(!params['access_token']) {
-        console.log("noice")
+        //console.log("noice")
         d3.json('https://aljondo.github.io/spotify100/ryans100.js', function(error, root) {
-          console.log("ME")
-          console.log(root)
+          //console.log("ME")
+          //console.log(root)
           ryansSongs = root;
           preLoadData();
         })
       }
       else {
         var access_token = params.access_token;
-        console.log("spinner")
-        console.log(spinner)
+        //console.log("spinner")
+        //console.log(spinner)
         getUserData(0, access_token);
         /*(function() {
           var stateKey = 'spotify_auth_state';

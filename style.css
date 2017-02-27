@@ -131,9 +131,6 @@ ul {
     opacity: 0.2;
 }*/
 
-.project-thumbnail {
-
-}
 .project-thumbnail:hover {
   outline: none;
   border-color: #CCFBFE;
@@ -145,6 +142,10 @@ ul {
   margin-right: auto;
   margin-left: auto;
   width: 20vw;
+}
+
+.pls {
+  width: 11vw;
 }
 
 @media (min-width: 992px) {
@@ -173,18 +174,10 @@ ul {
   -ms-touch-action: manipulation;
   touch-action: manipulation;
   background-image: none;
-  
   user-select: none;
-  line-height: 1.3;
-  
+  line-height: 1.3; 
 }
-.sp-button:active {
-  -webkit-border-image: url("sp://import/img/info_group-button.png") 21 11 21 11;
-}
-.sp-button:disabled {
-  -webkit-border-image: url("sp://import/img/info_group-button.png") 42 11 0 11;
-  text-shadow: 0 1px 0 #AAA;
-}
+
 
 /*skills page*/
 #skills {

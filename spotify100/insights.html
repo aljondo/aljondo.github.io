@@ -71,8 +71,14 @@
       }
 
       /*bubble chart stuff*/
-      a, a:visited, a:active {
+      .song-buttons, .song-buttons:visited, .song-buttons:active {
         color: #444;
+        font-family: 'Helvetica';
+        text-decoration: none;
+      }
+
+      .button {
+        text-decoration: none;
       }
 
       .container {
@@ -159,6 +165,107 @@
       #tabs {
         width: 1100px;
       }
+
+      #tabs-list {
+        background-color: #828282;
+      }
+
+      /*tab styles*/
+      #tab-list li {
+        display: inline-block;
+        padding-left: 7vh;
+        padding-right: 7vh; 
+        font-family: 'Helvetica';
+        font-weight: 500;
+      }
+
+      .ui-tabs-anchor {
+        text-decoration: none;
+        color: #000;
+        font-size: 15px;
+        -o-transition:.2s linear;
+        -ms-transition:.2s linear;
+        -moz-transition:.2s linear;
+        -webkit-transition:.2s linear;
+        transition:.2s linear;
+      }
+
+      .year {
+        font-family: "Helvetica";
+      }
+
+      .ui-tabs-anchor:hover {
+        color: #2ebd59;
+        text-decoration: none;
+      }
+
+      .ui-tabs-anchor:focus {
+        color: #2ebd59;
+        text-decoration: none;
+      }
+      .green-tab {
+        color: #2ebd59;
+      }
+
+      /*maybe too much work for a switch*/
+      /* The switch - the box around the slider */
+      .switch {
+        position: relative;
+        display: inline-block;
+        width: 60px;
+        height: 34px;
+      }
+
+      /* Hide default HTML checkbox */
+      .switch input {display:none;}
+
+      /* The slider */
+      .slider {
+        position: absolute;
+        cursor: pointer;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: #ccc;
+        -webkit-transition: .4s;
+        transition: .4s;
+      }
+
+      .slider:before {
+        position: absolute;
+        content: "";
+        height: 26px;
+        width: 26px;
+        left: 4px;
+        bottom: 4px;
+        background-color: white;
+        -webkit-transition: .4s;
+        transition: .4s;
+      }
+
+      input:checked + .slider {
+        background-color: #2196F3;
+      }
+
+      input:focus + .slider {
+        box-shadow: 0 0 1px #2196F3;
+      }
+
+      input:checked + .slider:before {
+        -webkit-transform: translateX(26px);
+        -ms-transform: translateX(26px);
+        transform: translateX(26px);
+      }
+
+      /* Rounded sliders */
+      .slider.round {
+        border-radius: 34px;
+      }
+
+      .slider.round:before {
+        border-radius: 50%;
+      }
     </style>
   </head>
 
@@ -179,7 +286,7 @@
         <button class="btn btn-default" id="obtain-new-token">Obtain new token using the refresh token</button>
       </div>-->
       <svg id="genre-chart" width="960" height="960"></svg>
-      <svg style= "overflow:auto" id="album-chart" width="960" height="570"></svg>
+      <svg style= "overflow:auto" id="album-chart" width="1050" height="500"></svg>
     </div>
 
     <script id="user-profile-template" type="text/x-handlebars-template">
@@ -259,7 +366,19 @@
         };
       }
 
-      var spinner; //global spinner variable
+      //the spinner
+      var opts = {
+        lines: 9, // The number of lines to draw
+        length: 9, // The length of each line
+        width: 5, // The line thickness
+        radius: 14, // The radius of the inner circle
+        color: '#2ebd59', // #rgb or #rrggbb or array of colors
+        speed: 1.9, // Rounds per second
+        trail: 40, // Afterglow percentage
+        className: 'spinner', // The CSS class to assign to the spinner
+      };
+      var target = document.getElementById('tabs');
+      var spinner = new Spinner(opts).spin(target)
       //console.log(genreCounter)
       //temp, from example. populate html elements w profile info
       var userProfileSource = document.getElementById('user-profile-template').innerHTML,
@@ -905,7 +1024,6 @@
                       '</span></div>';
 
           tooltip.showTooltip(content, d3.event);
-          console.log("why")
         }
 
         /*
@@ -1083,8 +1201,8 @@
             var i = 0;
             for(a in artistsRankingArray) {
               if(i < 5) {
-                artistTitlesX[artistsRankingArray[i][0]] = ((i + 1) * width) / 6;
-                artistCenters[artistsRankingArray[i][0]] = {x: ((i + 1) * width) / 6, y: height / 2}
+                artistTitlesX[artistsRankingArray[i][0]] = (((i + 1) * width) / 6) - 50;
+                artistCenters[artistsRankingArray[i][0]] = {x: (((i + 1) * width) / 6) - 50, y: height / 2}
               }
               else {
                 break;
@@ -1260,6 +1378,13 @@
             console.log("legend")
             console.log(legend.data)
 
+            svg.append("text")
+              .text("Popularity")
+              .attr("x", 0)
+              .attr("y", 20)
+              .classed("mono", true)
+
+
             legend.enter()
               .append("g")
                 .attr("class", function(d) {
@@ -1276,15 +1401,22 @@
               
             svg.selectAll('.legend').append('text')
               .attr('class', 'mono')
-              .attr('x', function (d, i) { return 5 + 50 * i })
+              .attr('x', function (d, i) { return 50 * i })
               .attr('y', 65)
-              .attr('text-anchor', 'middle')
+              .attr('text-anchor', function (d, i) {
+                if(i == 0) {
+                  return "left";
+                }
+                else {
+                  return "middle";
+                }
+              })
               .text(function (d, i) { 
                 if(i == 0) {
-                  return "0";
+                  return "Least";
                 }
                 else if(i == 4) {
-                  return "100";
+                  return "Most";
                 }
               });
 
@@ -1378,7 +1510,7 @@
 
           function nodeRankPosX(d) {
             //console.log("noderankpos")
-            return 250 + (5 * d['rank']);
+            return 300 + (5 * d['rank']);
           }
 
           function nodePopPos(d) {
@@ -1393,7 +1525,7 @@
             years.enter().append('text')
               .attr('class', 'year')
               .attr('x', function (d) { return artistTitlesX[d]; })
-              .attr('y', 80)
+              .attr('y', 90)
               .attr('text-anchor', 'middle')
               .text(function (d) { return d; });
           }
@@ -1522,6 +1654,7 @@
         function setupButtons() {
           d3.select('#song-toolbar')
             .selectAll('.button')
+            .classed('song-buttons', true)
             .on('click', function () {
               //console.log("CLICKED")
               // Remove active class from all buttons
@@ -1655,22 +1788,30 @@
       }
 
       function makeTabs() {
-        makeTab("genre-tab", "Genre");
-        makeTab("album-tab", "Album");
-        makeTab("song-tab", "Song");
-        graphGenres();
+        makeTab("album-tab", "ALBUMS");
+        makeTab("song-tab", "SONG");
+        makeTab("genre-tab", "GENRE");
         graphAlbums();
         graphSongs();
+        graphGenres();
         $(function() {
           $("#tabs").tabs();
         });
-
+        d3.selectAll('.ui-tabs-anchor')
+          .on('click', function () {
+            d3.selectAll('.ui-tabs-anchor').classed('green-tab', false);
+            var button = d3.select(this);
+            button.classed('green-tab', true);
+          });
+        d3.select('#link-album-tab') 
+          .classed('green-tab', true);
       }
       function makeTab(id, text) {
         var li = document.createElement('li');
         var a = document.createElement('a');
         a.href = "#" + id;
         a.append(document.createTextNode(text));
+        a.id = "link-" + id;
         li.append(a);
         document.getElementById('tab-list').append(li);
         var tabDiv = document.createElement('div');
@@ -1683,12 +1824,12 @@
           var rankButton = document.createElement('a');
           rankButton.href ='#';
           rankButton.id = 'rank-button';
-          rankButton.className = 'button active';
+          rankButton.className = 'button';
           rankButton.appendChild(document.createTextNode('Sort by rank'));
           var popButton = document.createElement('a');
           popButton.href ='#';
           popButton.id = 'pop-button';
-          popButton.className = 'button active';
+          popButton.className = 'button';
           popButton.appendChild(document.createTextNode('Sort by popularity'));
           var groupButton = document.createElement('a');
           groupButton.href ='#';
@@ -1698,18 +1839,22 @@
           var artistButton = document.createElement('a');
           artistButton.href = '#';
           artistButton.id = 'artist-split-button'
-          artistButton.className = 'button active';
+          artistButton.className = 'button';
           artistButton.appendChild(document.createTextNode('Show top artists'));
           var albumArtButton = document.createElement('a');
           albumArtButton.href = '#';
           albumArtButton.id = 'album-art-button'
           albumArtButton.className = 'button';
           albumArtButton.appendChild(document.createTextNode('Show/hide album art'));
+          var tip = document.createElement('div')
+          tip.appendChild(document.createTextNode("Click the bubbles for a preview"));
+          tip.className = 'song-button mono';
           toolDiv.appendChild(groupButton);
           toolDiv.appendChild(rankButton);
           toolDiv.appendChild(popButton);
           toolDiv.appendChild(artistButton);
           toolDiv.appendChild(albumArtButton);
+          toolDiv.appendChild(tip);
           tabDiv.append(toolDiv);
         }
       }
@@ -1741,19 +1886,7 @@
         })
       }
       else {
-        var opts = {
-          lines: 9, // The number of lines to draw
-          length: 9, // The length of each line
-          width: 5, // The line thickness
-          radius: 14, // The radius of the inner circle
-          color: '#2ebd59', // #rgb or #rrggbb or array of colors
-          speed: 1.9, // Rounds per second
-          trail: 40, // Afterglow percentage
-          className: 'spinner', // The CSS class to assign to the spinner
-        };
-        var target = document.getElementById('tabs');
         var access_token = params.access_token;
-        var spinner = new Spinner(opts).spin(target)
         console.log("spinner")
         console.log(spinner)
         getUserData(0, access_token);

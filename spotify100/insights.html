@@ -798,6 +798,7 @@
           zoomTo([root.x, root.y, root.r * 2 + margin]);
 
           function zoom(d) {
+            console.log(d)
             var focus0 = focus; focus = d;
             //console.log(d)
             var transition = d3.transition()
@@ -807,8 +808,8 @@
                   return function(t) { zoomTo(i(t)); };
                 });
 
-            transition.selectAll("text")
-              .filter(function(d) { return d.parent === focus || this.style.display === "inline"; })
+            transition.selectAll(".label")
+                .filter(function(d) { return d.parent === focus || this.style.display === "inline"; })
                 .style("fill-opacity", function(d) { return d.parent === focus ? 1 : 0; })
                 .on("start", function(d) { if (d.parent === focus && d.r > 16) this.style.display = "inline"; })
                 .on("end", function(d) { if (d.parent !== focus || d.r < 16) this.style.display = "none"; });

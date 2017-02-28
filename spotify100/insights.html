@@ -474,15 +474,19 @@
                         for(i in response.items) {
                           if(response.items[i].name == "Your Top Songs 2016") {
                             topSongsId = response.items[i].id;
-                            if(topSongsId == null) {
-                              $("#help-text").show();
-                            }
+                            //if(topSongsId == null) {
+                              //$("#help-text").show();
+                            //}
+                            //$("#help-text").delay(3000).fadeIn();
                             //console.log(topSongsId);
                             break;
                           }
                         }
                         //console.log(topSongsId)
                         getUserData(2, access_token);
+                      },
+                      error: function (err) {
+                        $("#help-text").show();
                       }
                   });
                   break;

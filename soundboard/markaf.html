@@ -8,6 +8,8 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/immutable/3.8.2/immutable.min.js"></script>
   </head>
   <body>
+    <div id="wrapper">
+    </div>
   	<!--<div class='container'>
   		<div class='row'>
   			<div class='col'>
@@ -43,7 +45,7 @@
   			</div>
   		</div>-->
   	<script>
-  		var soundDict = getSounds();
+  		var soundDict = getSounds();  
       const categories = [
         'Cries for help',
         'Accusations',
@@ -51,7 +53,67 @@
         'Yelps',
         'Screeches',
       ];
-      console.log(soundDict)
+ 
+      //add all sounds to array to start
+      var soundIds = [];
+      for(s in soundDict) {
+        soundIds.push(s);
+      }
+
+      render();
+
+      function createPanel(sound, id) {
+        var panel = createDiv('sound-panel', id)
+
+        /*d3.select("#" + id)
+          .append('svg')
+          .attr("fill", "red")
+          .attr("height", 100)
+          .attr("width", 100)
+          .text(sound.get('name'))*/
+        return panel;
+      }
+
+      //creates panels for 
+      function render() {
+        var elem = document.querySelector('#container');
+        if(elem) {
+          elem.parentNode.removeChild(elem);
+        }
+        var container = createDiv('', 'container');
+        var row;
+        for(s in soundIds) {
+          if(s % 4 === 0) {
+            var row = createDiv('row');
+          }
+          var sId = soundIds[s];
+          var panel = createPanel(soundDict[sId], sId)
+          row.append(panel)
+          if(s % 4 === 3) {
+            container.append(row);
+          }
+        }
+        document.getElementById('wrapper').append(container);
+
+        for(s in soundIds) {
+          var sound = soundDict[soundIds[s]];
+          d3.select("#" + soundIds[s])
+            .append('svg')
+            .append('rect')
+            .attr("fill", "#CD5C5C")
+            .attr("height", 150)
+            .attr("width", 150)
+            .text(sound.get('name'))
+            .on('click', function(d) {
+              console.log(sound.get('url'))
+              var url = sound.get('url').trim().replace(/ /g,"%20");
+              console.log(url)
+              var clip = new Audio(url);
+              clip.play();
+            })
+        }
+      }
+
       function getSounds() {
         //hard coding for now
         return {
@@ -162,6 +224,19 @@
           }),
         }
       }
+
+      function createDiv(className, id) {
+        var div = document.createElement('div');
+        if(className) {
+          div.className = className;
+        }
+        if(id) {
+          div.id = id;
+        }
+        return div;
+      }
+
+
   	</script>
   </body>
  </html>

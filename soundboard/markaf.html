@@ -2,6 +2,22 @@
 <html>
   <head>
   	<title> Mark Turner Soundboard </title>
+    <style type='text/css'>
+      #container {
+        display: table;
+        margin: 0 auto;
+      }
+
+      .sound-panel p {
+        font-size: 9pt;
+        font-family: Consolas, courier;
+        fill: #000;
+
+        text-align: center;
+        vertical-align: middle;
+        line-height: 90px;
+      }
+    </style>
   	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css">
   	<script src="https://code.jquery.com/jquery-1.10.1.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/4.5.0/d3.min.js"></script>
@@ -10,7 +26,7 @@
   <body>
     <div id="wrapper">
     </div>
-  	<!--<div class='container'>
+  	<div class='container'>
   		<div class='row'>
   			<div class='col'>
   				<p>test</p>
@@ -43,7 +59,7 @@
   			<div class='col'>
   				<p>test</p>
   			</div>
-  		</div>-->
+  		</div>
   	<script>
   		var soundDict = getSounds();  
       const categories = [
@@ -63,14 +79,36 @@
       render();
 
       function createPanel(sound, id) {
-        var panel = createDiv('sound-panel', id)
+        console.log('creating panel')
+        console.log(id)
+        var panel = createDiv('col-xs sound-panel', id)
+        panel.style.backgroundColor = "#CD5C5C";
+        panel.style.height = '15vh';
+        panel.style.width = '30vh';
+        panel.style.margin = '1vh';
+        panel.onclick = playSound(sound);
+
+        var text = document.createElement('p');
+        text.append(document.createTextNode(sound.get('name')));
+        panel.append(text);
 
         /*d3.select("#" + id)
           .append('svg')
           .attr("fill", "red")
           .attr("height", 100)
           .attr("width", 100)
-          .text(sound.get('name'))*/
+          .text(sound.get('name'))
+
+        d3.select("#" + soundIds[s])
+            .append('svg')
+            .append('rect')
+            .attr("fill", "#CD5C5C")
+            .attr('id', soundIds[s] + '-rect')
+            .attr("height", 150)
+            .attr("width", 200)
+            .on('click', playSound(sound))
+          
+        */
         return panel;
       }
 
@@ -82,7 +120,9 @@
         }
         var container = createDiv('', 'container');
         var row;
+        var appended = false;
         for(s in soundIds) {
+          appended = false;
           if(s % 4 === 0) {
             var row = createDiv('row');
           }
@@ -90,28 +130,45 @@
           var panel = createPanel(soundDict[sId], sId)
           row.append(panel)
           if(s % 4 === 3) {
+            appended = true;
             container.append(row);
           }
+        }
+        if(!appended) {
+          container.append(row);
         }
         document.getElementById('wrapper').append(container);
 
         for(s in soundIds) {
           var sound = soundDict[soundIds[s]];
-          d3.select("#" + soundIds[s])
+          console.log(sound.get('name'))
+          /*d3.select("#" + soundIds[s])
             .append('svg')
             .append('rect')
             .attr("fill", "#CD5C5C")
+            .attr('id', soundIds[s] + '-rect')
             .attr("height", 150)
-            .attr("width", 150)
-            .text(sound.get('name'))
-            .on('click', function(d) {
-              console.log(sound.get('url'))
-              var url = sound.get('url').trim().replace(/ /g,"%20");
-              console.log(url)
-              var clip = new Audio(url);
-              clip.play();
-            })
+            .attr("width", 200)
+            .on('click', playSound(sound))
+          
+          //append text
+          var text = document.createElement('p'); 
+          text.append(document.createTextNode(sound.get('name')));
+          console.log(soundIds[s] + '-rect')
+          document.getElementById(soundIds[s] + '-rect').append(text) 
+          console.log(s)
+          console.log(soundIds[s])*/
         }
+      }
+
+      //return the function to play the *correct* song
+      function playSound(sound) {
+        var soundFunc = function () {
+          var url = 'https://aljondo.github.io/soundboard' + sound.get('url').trim().replace(/ /g,"%20") + '.mp3';
+          var clip = new Audio(url);
+          clip.play();
+        } 
+        return soundFunc;
       }
 
       function getSounds() {
@@ -210,7 +267,7 @@
           winstonsboosted: Immutable.Map({
             url: '/marks/winstons boosted and running after me',
             category: 'Cries for help',
-            name: 'winstons boosted and running after me'
+            name: 'winstons boosted'
           }),
           woohoo: Immutable.Map({
             url: '/marks/Woohoo',
@@ -227,6 +284,8 @@
 
       function createDiv(className, id) {
         var div = document.createElement('div');
+        if(id === 'youtookmyhero')
+          console.log ("HERERERE")
         if(className) {
           div.className = className;
         }

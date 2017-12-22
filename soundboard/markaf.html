@@ -3,19 +3,38 @@
   <head>
   	<title> Mark Turner Soundboard </title>
     <style type='text/css'>
-      #container {
+      #wrapper {
         display: table;
         margin: 0 auto;
+        padding: 3vh;
+      }
+
+      #search {
+        text-align: center;
+      }
+
+      .sound-panel:hover {
+        outline: none;
+        border-color: #000000;
+        box-shadow: 0 0 10px #000;
       }
 
       .sound-panel p {
-        font-size: 9pt;
+        font-size: 100%;
         font-family: Consolas, courier;
         fill: #000;
 
         text-align: center;
         vertical-align: middle;
         line-height: 90px;
+      }
+
+      @media screen and (max-width: 700px) {
+        #container {
+          width: 50%;
+          display: table;
+          margin: 0 auto;
+        }
       }
     </style>
   	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css">
@@ -24,42 +43,12 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/immutable/3.8.2/immutable.min.js"></script>
   </head>
   <body>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <div id="wrapper">
+      <form action="/action_page.php" id="search">
+        Search <input type="text" name="search" id="search-bar" oninput="onChange()"><br>
+      </form>
     </div>
-  	<div class='container'>
-  		<div class='row'>
-  			<div class='col'>
-  				<p>test</p>
-  			</div>
-  			<div class='col'>
-  				<p>test</p>
-  			</div>
-  			<div class='col'>
-  				<p>test</p>
-  			</div>
-  		</div>
-  		<div class='row'>
-  			<div class='col'>
-  				<p>test</p>
-  			</div>
-  			<div class='col'>
-  				<p>test</p>
-  			</div>
-  			<div class='col'>
-  				<p>test</p>
-  			</div>
-  		</div>
-  		<div class='row'>
-  			<div class='col'>
-  				<p>test</p>
-  			</div>
-  			<div class='col'>
-  				<p>test</p>
-  			</div>
-  			<div class='col'>
-  				<p>test</p>
-  			</div>
-  		</div>
   	<script>
   		var soundDict = getSounds();  
       const categories = [
@@ -72,45 +61,13 @@
  
       //add all sounds to array to start
       var soundIds = [];
+      var soundNames = []; // for the purposes of filtering
       for(s in soundDict) {
         soundIds.push(s);
+        soundNames.push(soundDict[s].get('name'));
       }
 
       render();
-
-      function createPanel(sound, id) {
-        console.log('creating panel')
-        console.log(id)
-        var panel = createDiv('col-xs sound-panel', id)
-        panel.style.backgroundColor = "#CD5C5C";
-        panel.style.height = '15vh';
-        panel.style.width = '30vh';
-        panel.style.margin = '1vh';
-        panel.onclick = playSound(sound);
-
-        var text = document.createElement('p');
-        text.append(document.createTextNode(sound.get('name')));
-        panel.append(text);
-
-        /*d3.select("#" + id)
-          .append('svg')
-          .attr("fill", "red")
-          .attr("height", 100)
-          .attr("width", 100)
-          .text(sound.get('name'))
-
-        d3.select("#" + soundIds[s])
-            .append('svg')
-            .append('rect')
-            .attr("fill", "#CD5C5C")
-            .attr('id', soundIds[s] + '-rect')
-            .attr("height", 150)
-            .attr("width", 200)
-            .on('click', playSound(sound))
-          
-        */
-        return panel;
-      }
 
       //creates panels for 
       function render() {
@@ -138,27 +95,24 @@
           container.append(row);
         }
         document.getElementById('wrapper').append(container);
+      }
 
-        for(s in soundIds) {
-          var sound = soundDict[soundIds[s]];
-          console.log(sound.get('name'))
-          /*d3.select("#" + soundIds[s])
-            .append('svg')
-            .append('rect')
-            .attr("fill", "#CD5C5C")
-            .attr('id', soundIds[s] + '-rect')
-            .attr("height", 150)
-            .attr("width", 200)
-            .on('click', playSound(sound))
-          
-          //append text
-          var text = document.createElement('p'); 
-          text.append(document.createTextNode(sound.get('name')));
-          console.log(soundIds[s] + '-rect')
-          document.getElementById(soundIds[s] + '-rect').append(text) 
-          console.log(s)
-          console.log(soundIds[s])*/
+      function onChange() {
+        var filter = document.getElementById("search-bar").value;
+        console.log(Object.keys(soundDict))
+        var newSoundNames = soundNames.filter(key => key.toLowerCase().includes(filter.toLowerCase()));
+        soundIds = []; 
+        for(s in soundDict) {
+          if(newSoundNames.includes(soundDict[s].get('name'))) {
+            soundIds.push(s);
+          }
         }
+          /*.reduce((obj, key) => {
+            obj[key] = soundDict[key];
+            return obj;
+          }, {});*/
+        render();
+        
       }
 
       //return the function to play the *correct* song
@@ -216,7 +170,7 @@
           }),
           noifell: Immutable.Map({
             url: '/marks/NO I FELL IN THE HOLE',
-            category: 'Yelps',
+            category: 'Cries for help',
             name: 'NO I FELL IN THE HOLE'
           }),
           nooooo: Immutable.Map({
@@ -225,7 +179,7 @@
             name: 'NOOOOO'
           }),
           ononoooo: Immutable.Map({
-            url: '/marks/O NO. NOOO',
+            url: '/marks/O NO. NOOO (music)',
             category: 'Cries for help',
             name: 'O NO. NOOO'
           }),
@@ -281,6 +235,21 @@
           }),
         }
       }
+
+      function createPanel(sound, id) {
+        var panel = createDiv('col-xs sound-panel', id)
+        panel.style.backgroundColor = "#CD5C5C";
+        panel.style.height = '15vh';
+        panel.style.width = '30vh';
+        panel.style.margin = '1vh';
+        panel.onclick = playSound(sound);
+
+        var text = document.createElement('p');
+        text.append(document.createTextNode(sound.get('name')));
+        panel.append(text);
+        return panel;
+      }
+
 
       function createDiv(className, id) {
         var div = document.createElement('div');

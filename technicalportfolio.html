@@ -16,19 +16,27 @@
 		<link rel="stylesheet" type="text/css" href="style.css">
 	</head>
 	<body>
-		<div class="colored-font" id="projecvts">
+		<div class="colored-font" id="projects">
 			<div id="nav" class="container nav-bar">
 	   			  <ul>
-	        	    <li><a class="nav-text" href="index.html" class="green-text">Home</a></li>
-	        	    <li class="nav-current-page">Programming</li>
-	        	    <li><a class="nav-text" href="music.html">Music</a></li>
-	        	    <li><a class="nav-text" href="contact.html">Contact</a><li>
+	        	    <li><a class="nav-text" href="portfolio.html">Home</a></li>
+	        	    <li class="nav-current-page">Technical</li>
+	        	    <li><a class="nav-text" href="writingportfolio.html">Writing</a><li>
 	    		  </ul>
 	  		</div>
 	  		<div class="container fade-in">
 	  			<div class="row">
 	  				<div>
+	  					<h2 class="text-center"><a href="Ryan-Aljondi-Resume.pdf" target="_blank">Resume</a></h2>
 	  					<h2 class="text-center">Projects</h2>
+	  					<div class="col-md-4" id="a-coding-project">
+	  						<div class="a-coding-project">
+	  							<a class="fancybox" href="#LB-box">
+	  								<img class="project-thumbnail" src="pictures/LB.jpg">
+	  							</a>
+	  							<h4 class="text-center">Little Brothers: Friends of the Elderly.</h4>
+	  						</div>
+	  					</div>
 	  					<div class="col-md-4" id="a-coding-project">
 	  						<div class="a-coding-project">
 	  							<a class="fancybox" href="#spotify-box">
@@ -39,21 +47,15 @@
 	  					</div>
 	  					<div class="col-md-4" id="a-coding-project">
 	  						<div class="a-coding-project">
-								<a class="project-thumbnail" href="bbbutton.html">
+								<a class="project-thumbnail" href="portfoliobbbutton.html">
 									<img class="project-thumbnail" src="pictures/billboard/billboardequal.jpg">
 								</a>
 								<h4 class="text-center">The Billboard Button Chrome extension.</h4>
 							</div>
 	  					</div>
-	  					<div class="col-md-4" id="a-coding-project">
-	  						<div class="a-coding-project">
-								<a class="project-thumbnail" href="soundshow.html">
-									<img class="project-thumbnail" src="pictures/soundshow/soundshow.png">
-								</a>
-								<h4 class="text-center">Soundshow: A custom lightshow creator.</h4>
-							</div>
-	  					</div>
+
 					</div>
+
 				</div>
 				<div id="spotify-box" class="colored-font" style="display: none">
 					<h1 class="text-center">Spotify Top 100 Visualizations</h1>
@@ -65,6 +67,14 @@
 						<a href="spotify100/insights.html"><button class="sp-button" style="background-color: #2274A5">USE RYAN'S PLAYLIST</button></a>
 					</div> 	
 				</div>
+				<div id="LB-box" class="colored-font" style="display: none">
+					<h1 class="text-center">Little Brothers Visualization</h1>
+					<h4 class="text-center" style="width: 150vh; padding-bottom: 15px">For our final project in Intro to Data Visualization, we were partnered with Little Brothers to create a visualization (using D3) showing elderly/disabled developments around Boston and the potential for LB to start volunteer programs at those developments.</h4>
+					<div class="col-sm-12 text-center">
+						<a href="https://pages.github.ccs.neu.edu/jowels/LB1/viz.html" target="_blank"><button class="sp-button" style="background-color: #fab700">View visualization</button></a>
+					</div> 	
+				</div>
+			</div>
 			</div>
 		</div>
 		<script>
